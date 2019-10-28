@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import mintUI from 'mint-ui'
+import axios from 'axios'
 import './assets/style/base.css'
 import 'mint-ui/lib/style.min.css'
 import './assets/font/iconfont.css'
@@ -11,7 +12,8 @@ import './assets/font/iconfont.css'
 import { Header } from 'mint-ui';
 
 Vue.component(Header.name, Header);
-
+Vue.prototype.axios = axios;
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 Vue.use(mintUI);
 
 Vue.config.productionTip = false

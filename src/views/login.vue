@@ -24,19 +24,20 @@
                   for="username"
                   class="placeholder ng-binding"
                   ng-class="{'indent': showCcc}"
-                >手机号/邮箱</label>
+                ></label>
                 <input
                   type="text"
                   name="username"
                   aria-labelledby="u-required u-format-error u-not-exist"
                   autocomplete="username"
-                  ng-model="user.username"
+                  v-model="username"
                   required
                   i-input
                   i-focus
                   i-username
                   i-auto-focus
                   i-response
+                  placeholder="手机号/邮箱"
                   ng-class="{'indent': showCcc}"
                   class="ng-pristine ng-invalid ng-invalid-required ng-valid-name-valid"
                 />
@@ -65,19 +66,20 @@
                 <span class="icon">
                   <i>密码</i>
                 </span>
-                <label for="password" class="placeholder">密码</label>
+                <label for="password" class="placeholder"></label>
                 <input
                   type="password"
                   name="password"
                   aria-labelledby="p-required p-error"
                   autocomplete="current-password"
-                  ng-model="user.password"
+                  v-model="password"
                   required
                   ng-trim="false"
                   i-input
                   i-focus
                   i-enter="login()"
                   i-response
+                  placeholder="密码"
                   select-on="focus.password"
                   class="ng-pristine ng-invalid ng-invalid-required ng-valid-password-valid"
                 />
@@ -119,7 +121,7 @@
             <div
               class="btn btn-primary disabled"
               ng-class="{'disabled':form.$invalid}"
-              ng-click="login()"
+              @click="login"
             >
               <a role="button">登录</a>
             </div>
@@ -155,11 +157,38 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      username: '',
+      password: ''
+    };
   },
   methods: {
     gotoRigist(){
-      this.$router.push('regist')
+      this.username = '';
+      this.password = '';
+      this.$router.push('regist');
+    },
+    login(){
+      if(this.username === '' || this.password === ''){
+        alert('请输入用户名或密码')
+      }else{
+        localStorage.setItem('username',JSON.stringify(this.username));
+        localStorage.setItem('password',JSON.stringify(this.password));
+        const loginUrl = 'http://localhost:3000/login';
+        let params = new URLSearchParams();
+        params.append('username',this.username);
+        params.append('password',this.password);
+        this.axios({
+          method: 'post',
+          url: loginUrl,
+          data: params
+        }).then(res=>{
+          console.log(res);
+          if(res.data.status == 200){
+            this.$router.push('/');
+          }
+        })
+      }
     }
   },
 };

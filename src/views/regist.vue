@@ -36,12 +36,12 @@
                   <i>手机号</i>
                 </span>
                 <span class="ccc ng-binding" ng-bind="ccc">+86</span>
-                <label for="mobile" class="placeholder indent">手机号</label>
+                <label for="mobile" class="placeholder indent"></label>
                 <input
                   type="text"
                   name="mobile"
                   aria-labelledby="m-required m-format-error m-registered"
-                  ng-model="user.mobile"
+                  v-model="username"
                   required
                   i-input
                   i-focus
@@ -49,6 +49,7 @@
                   i-auto-focus
                   i-response
                   ng-blur="validateMobile()"
+                  placeholder="手机号"
                   class="indent ng-pristine ng-invalid ng-invalid-required ng-valid-mobile-registered ng-valid-mobile"
                 />
                 <span
@@ -77,18 +78,19 @@
                 <span class="icon">
                   <i>短信验证码</i>
                 </span>
-                <label for="verification" class="placeholder">短信验证码</label>
+                <label for="verification" class="placeholder"></label>
                 <input
                   type="text"
                   name="verification"
                   aria-labelledby="v-required v-error v-error2 v-again"
-                  ng-model="user.verification"
+                  v-model="code"
                   required
                   i-input
                   i-focus
                   limit-length="6"
                   i-response
                   ng-blur="validateMobileCaptcha()"
+                  placeholder="短信验证码"
                   class="ng-pristine ng-invalid ng-invalid-required ng-valid-mobile-captcha-valid ng-valid-mobile-captcha-reload"
                 />
                 <span
@@ -119,29 +121,29 @@
               <div
                 class="btn btn-default disabled"
                 ng-class="{disabled: form.mobile.$invalid || form.captcha.$invalid || captchaSubmitted}"
-                ng-show="showBtn"
+                v-show="show"
               >
-                <a role="button" ng-click="resend()">获取验证码</a>
+                <a role="button" @click="getCode">获取验证码</a>
               </div>
-              <!-- <div class="btn btn-default disabled ng-hide" ng-show="!showBtn">
+              <div class="btn btn-default disabled ng-hide" v-show="!show">
                 <a role="button">
                   重新发送
-                  <b class="ng-binding"></b>
+                  <b class="ng-binding">{{count}}</b>
                 </a>
-              </div> -->
+              </div>
             </li>
             <li class="password">
               <div class="input" i-animation="errAnimation.password">
                 <span class="icon">
                   <i>密码</i>
                 </span>
-                <label for="password" class="placeholder">密码</label>
+                <label for="password" class="placeholder"></label>
                 <input
                   type="password"
                   name="password"
                   id="password"
                   aria-labelledby="p-required p-format-error p-format"
-                  ng-model="user.password"
+                  v-model="password"
                   required
                   i-input
                   i-focus
@@ -149,6 +151,7 @@
                   ng-trim="false"
                   ng-focus="needRePassword = true"
                   autocomplete="off"
+                  placeholder="密码"
                   class="ng-pristine ng-invalid ng-invalid-required"
                 />
                 <span class="m-eye"></span>
@@ -188,14 +191,14 @@
                 <span class="icon">
                   <i>重复密码</i>
                 </span>
-                <label for="repassword" class="placeholder">重复密码</label>
+                <label for="repassword" class="placeholder"></label>
                 <input
                   type="password"
                   autocomplete="off"
                   name="repassword"
                   id="repassword"
                   aria-labelledby="rp-required rp-format-error rp-format rp-not-same"
-                  ng-model="user.repassword"
+                  v-model="repassword"
                   required
                   i-input
                   i-focus
@@ -203,6 +206,7 @@
                   i-repassword
                   ng-trim="false"
                   i-enter="register()"
+                  placeholder="重复密码"
                   class="ng-pristine ng-invalid ng-invalid-required"
                 />
                 <span
@@ -260,15 +264,15 @@
               class="btn btn-primary disabled"
               ng-class="{'disabled':form.$invalid}"
               ng-show="!clicked"
-              ng-click="register()"
+              @click="regist"
             >
               <a role="button">注册</a>
             </div>
-           <!--  <div class="btn btn-primary ng-hide" ng-show="clicked">
+            <!--  <div class="btn btn-primary ng-hide" ng-show="clicked">
               <a>
                 <span class="btn-loading"></span>
               </a>
-            </div> -->
+            </div>-->
             <p class="tologin">
               <a @click="gotoLogin">
                 如果您已拥有 Smartisan ID，则可在此
@@ -284,16 +288,68 @@
 
 <script>
 export default {
-  data(){
+  data() {
     return {
-
-    }
+      show: true,
+      count: "",
+      timer: null,
+      username: "",
+      code: "",
+      password: "",
+      repassword: ""
+    };
   },
   methods: {
-    gotoLogin(){
-      this.$router.push('login');
+    gotoLogin() {
+      this.username = '';
+      this.code = '';
+      this.password = '';
+      this.repassword = '';
+      this.$router.push("login");
+    },
+    getRand(min, max) {
+      return Math.floor(Math.random() * (max - min) + min);
+    },
+    getCode() {
+      const TIME_COUNT = 5;
+      if (!this.timer) {
+        this.count = TIME_COUNT;
+        this.show = false;
+        console.log("Code:", this.getRand(1000, 9999));
+        this.timer = setInterval(() => {
+          if (this.count > 0 && this.count <= TIME_COUNT) {
+            this.count--;
+          } else {
+            this.show = true;
+            clearInterval(this.timer);
+            this.timer = null;
+          }
+        }, 1000);
+      }
+    },
+    regist() {
+      if (this.username === "" || this.password === "") {
+        alert("请输入用户名或密码");
+      } else {
+        localStorage.setItem("username", JSON.stringify(this.username));
+        localStorage.setItem("password", JSON.stringify(this.password));
+
+        const registUrl = "http://localhost:3000/regist";
+        let params = new URLSearchParams();
+        params.append("username", this.username);
+        params.append("password", this.password);
+        params.append("repassword", this.repassword);
+        this.axios({
+          method: "post",
+          url: registUrl,
+          data: params
+        }).then(res => {
+          console.log(res);
+          alert(`注册成功，您的用户名为${res.data.username}`)
+        });
+      }
     }
-  },
+  }
 };
 </script>
 
@@ -374,7 +430,7 @@ ul {
   left: 0;
 }
 .bind-password .common-form li.password-repeat .icon,
- .common-form li .icon,
+.common-form li .icon,
 .register .common-form li.password-repeat .icon {
   display: none;
 }
@@ -397,312 +453,339 @@ ul {
   font-size: 16px;
 }
 .common-form li.country-region .country {
-    position: absolute;
-    right: 10px;
-    font-size: 15px;
-    line-height: 44px;
-    display: inline-block;
-    max-width: 76px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding-right: 20px;
-    text-align: right;
-    background-image: url('../assets/images/ichange.png');
-    background-size: auto 9px;
-    background-repeat: no-repeat;
-    background-position: right center;
-    cursor: pointer;
-    z-index: 100;
+  position: absolute;
+  right: 10px;
+  font-size: 15px;
+  line-height: 44px;
+  display: inline-block;
+  max-width: 76px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 20px;
+  text-align: right;
+  background-image: url("../assets/images/ichange.png");
+  background-size: auto 9px;
+  background-repeat: no-repeat;
+  background-position: right center;
+  cursor: pointer;
+  z-index: 100;
 }
 .input {
-    border: 1px solid #C2C3C6;
-    border-radius: 6px;
-    height: 33px;
-    line-height: 33px;
-    opacity: 1!important;
-    overflow: hidden;
-    position: relative;
+  border: 1px solid #c2c3c6;
+  border-radius: 6px;
+  height: 33px;
+  line-height: 33px;
+  opacity: 1 !important;
+  overflow: hidden;
+  position: relative;
 }
- .common-form li .input {
-    border-radius: 4px;
-    box-shadow: 0 3px 5px -4px rgba(0,0,0,.4) inset, -1px 0 3px -2px rgba(0,0,0,.1) inset;
+.common-form li .input {
+  border-radius: 4px;
+  box-shadow: 0 3px 5px -4px rgba(0, 0, 0, 0.4) inset,
+    -1px 0 3px -2px rgba(0, 0, 0, 0.1) inset;
 }
 
-.login .common-form li.password, .login .common-form li.username,  .common-form li .input, .auth-page .valid-question li, .bind-password .common-form li.password, .bind-password .common-form li.password-repeat {
-    background-color: #fff;
-    border: 1px solid #d1d1d1;
+.login .common-form li.password,
+.login .common-form li.username,
+.common-form li .input,
+.auth-page .valid-question li,
+.bind-password .common-form li.password,
+.bind-password .common-form li.password-repeat {
+  background-color: #fff;
+  border: 1px solid #d1d1d1;
 }
- .input {
-    height: 44px;
+.input {
+  height: 44px;
 }
 .common-form li.username .ccc {
-    position: absolute;
-    left: 32px;
-    display: inline-block;
-    width: 55px;
-    text-align: center;
+  position: absolute;
+  left: 32px;
+  display: inline-block;
+  width: 55px;
+  text-align: center;
 }
- .common-form li.username .ccc {
-    left: 0;
-    line-height: 44px;
+.common-form li.username .ccc {
+  left: 0;
+  line-height: 44px;
 }
 .input .placeholder {
-    color: #b2b2b2;
-    font-size: 15px;
-    padding: 1px 0 0;
-    position: absolute;
-    left: 44px;
-    top: 0;
+  color: #b2b2b2;
+  font-size: 15px;
+  padding: 1px 0 0;
+  position: absolute;
+  left: 44px;
+  top: 0;
 }
-.bind-password .common-form li.password-repeat .placeholder,  .input .placeholder, .register .common-form li.password-repeat .placeholder {
-    line-height: 44px;
-    left: 10px;
+.bind-password .common-form li.password-repeat .placeholder,
+.input .placeholder,
+.register .common-form li.password-repeat .placeholder {
+  line-height: 44px;
+  left: 10px;
 }
- .common-form li.username .placeholder.indent {
-    left: 55px;
+.common-form li.username .placeholder.indent {
+  left: 55px;
 }
 .input input {
-    background: 0 0;
-    border: 0;
-    box-sizing: border-box;
-    font-size: 14px;
-    padding: 0 15px 0 44px;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-} .input input {
-    height: 44px;
-} .common-form .input input {
-    font-size: 15px;
-} .common-form li.username input.indent {
-    padding-left: 55px;
+  background: 0 0;
+  border: 0;
+  box-sizing: border-box;
+  font-size: 14px;
+  padding: 0 15px 0 44px;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
- .common-form .input input,  .common-form li.captcha .input>input,  .common-form li.username input.indent,  .common-form li.verification input {
-    padding: 0 10px;
-    width: 100%;
+.input input {
+  height: 44px;
 }
-.bind-account .common-form li.username input.indent, .modify-mobile .valid-user li.username input.indent, .register .common-form li.username input.indent {
-    top: auto;
+.common-form .input input {
+  font-size: 15px;
+}
+.common-form .input input,
+.common-form li.captcha .input > input,
+.common-form li.username input.indent,
+.common-form li.verification input {
+  padding: 0 10px;
+  width: 100%;
+}
+.common-form li.username input.indent {
+  padding-left: 55px;
+}
+.bind-account .common-form li.username input.indent,
+.modify-mobile .valid-user li.username input.indent,
+.register .common-form li.username input.indent {
+  top: auto;
 }
 .input .warning {
-    background: #d16d62;
-    border-radius: 4px;
-    color: #FFF;
-    display: none;
-    font-size: 12px;
-    font-weight: 400;
-    height: 20px;
-    line-height: 20px;
-    opacity: 0;
-    padding: 0 8px;
-    position: absolute;
-    top: 6px;
-    right: 8px;
+  background: #d16d62;
+  border-radius: 4px;
+  color: #fff;
+  display: none;
+  font-size: 12px;
+  font-weight: 400;
+  height: 20px;
+  line-height: 20px;
+  opacity: 0;
+  padding: 0 8px;
+  position: absolute;
+  top: 6px;
+  right: 8px;
 }
- .input .warning {
-    position: fixed;
-    top: auto;
-    bottom: 48px;
-    left: 50%;
-    right: auto;
-    width: auto;
-    transform: translateX(-50%);
-    text-align: center;
-    background: #ffe8b4;
-    background: linear-gradient(#ffebbd,#ffe7af);
-    color: #6e5336;
-    font-size: 13px;
-    text-shadow: 0 -1px rgba(255,255,255,.2);
-    border: 1px solid #cdbe9a;
-    height: 34px;
-    line-height: 37px;
-    padding: 0 13px;
-    -webkit-box-shadow: 0 2px 10px -4px rgba(0,0,0,.9), 0 1px 20px -9px rgba(0,0,0,.7);
-    box-shadow: 0 2px 10px -4px rgba(0,0,0,.9), 0 1px 20px -9px rgba(0,0,0,.7);
-    z-index: 100;
+.input .warning {
+  position: fixed;
+  top: auto;
+  bottom: 48px;
+  left: 50%;
+  right: auto;
+  width: auto;
+  transform: translateX(-50%);
+  text-align: center;
+  background: #ffe8b4;
+  background: linear-gradient(#ffebbd, #ffe7af);
+  color: #6e5336;
+  font-size: 13px;
+  text-shadow: 0 -1px rgba(255, 255, 255, 0.2);
+  border: 1px solid #cdbe9a;
+  height: 34px;
+  line-height: 37px;
+  padding: 0 13px;
+  -webkit-box-shadow: 0 2px 10px -4px rgba(0, 0, 0, 0.9),
+    0 1px 20px -9px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 2px 10px -4px rgba(0, 0, 0, 0.9),
+    0 1px 20px -9px rgba(0, 0, 0, 0.7);
+  z-index: 100;
 }
- .common-form li.captcha .input,  .common-form li.verification .input {
-    width: 60.6%;
+.common-form li.captcha .input,
+.common-form li.verification .input {
+  width: 60.6%;
 }
 .common-form li.verification .icon i {
-    background-position: -109px 10px;
+  background-position: -109px 10px;
 }
 .btn.disabled {
-    cursor: not-allowed;
-    opacity: .6;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 .btn-default {
-    background: #96989C;
+  background: #96989c;
 }
 .btn {
-    border-radius: 6px;
-    cursor: pointer;
-    display: inline-block;
-    height: 33px;
-    line-height: 34px;
-    overflow: hidden;
-    text-align: center;
-    width: 153px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-block;
+  height: 33px;
+  line-height: 34px;
+  overflow: hidden;
+  text-align: center;
+  width: 153px;
 }
 .common-form .verification .btn-default {
-    width: 28.3333%;
-    position: absolute;
-    top: 0;
-    right: 0;
+  width: 28.3333%;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
- .common-form li.verification .btn-default {
-    width: 130px;
-    box-shadow: none;
+.common-form li.verification .btn-default {
+  width: 130px;
+  box-shadow: none;
 }
- .common-form li.verification .btn-default {
-    height: 46px;
-    line-height: 46px;
-    background: 0 0;
-    border: 1px solid #d1d1d1;
+.common-form li.verification .btn-default {
+  height: 46px;
+  line-height: 46px;
+  background: 0 0;
+  border: 1px solid #d1d1d1;
 }
- .common-form li.captcha .tips-verifycon,  .common-form li.verification .btn-default {
-    width: 36%;
-    box-sizing: border-box;
+.common-form li.captcha .tips-verifycon,
+.common-form li.verification .btn-default {
+  width: 36%;
+  box-sizing: border-box;
 }
- .common-form .verification .btn-default a,  .common-form .verification .btn-default a:hover {
-    font-size: 14px;
-    color: #000;
-    background: #CACDD1;
-    background: -webkit-linear-gradient(#fcfcfc,#f7f7f7);
-    background: -moz-linear-gradient(#fcfcfc,#f7f7f7);
-    background: -ms-linear-gradient(#fcfcfc,#f7f7f7);
-    background: -o-linear-gradient(#fcfcfc,#f7f7f7);
-    background: linear-gradient(#fcfcfc,#f7f7f7);
-    box-shadow: none;
+.common-form .verification .btn-default a,
+.common-form .verification .btn-default a:hover {
+  font-size: 14px;
+  color: #000;
+  background: #cacdd1;
+  background: -webkit-linear-gradient(#fcfcfc, #f7f7f7);
+  background: -moz-linear-gradient(#fcfcfc, #f7f7f7);
+  background: -ms-linear-gradient(#fcfcfc, #f7f7f7);
+  background: -o-linear-gradient(#fcfcfc, #f7f7f7);
+  background: linear-gradient(#fcfcfc, #f7f7f7);
+  box-shadow: none;
 }
-.bind-account .reg-form .btn-wrapper, .bind-password .reg-form .btn-wrapper,  .btn-wrapper {
-    margin: 0;
+.bind-account .reg-form .btn-wrapper,
+.bind-password .reg-form .btn-wrapper,
+.btn-wrapper {
+  margin: 0;
 }
 .reg-form .btn-wrapper .agreement {
-    cursor: pointer;
-    margin: 20px 0 0;
-    position: relative;
+  cursor: pointer;
+  margin: 20px 0 0;
+  position: relative;
 }
 
 .reg-form .btn-wrapper p {
-    color: #7f7f7f;
-    font-size: 14px;
-    line-height: 18px;
-    text-align: center;
+  color: #7f7f7f;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
 }
- .reg-form .btn-wrapper .agreement {
-    text-align: left;
-    margin: 10px 0 20px;
-    padding: 0 11px;
+.reg-form .btn-wrapper .agreement {
+  text-align: left;
+  margin: 10px 0 20px;
+  padding: 0 11px;
 }
- .reg-form .btn-wrapper .agreement .checkbox {
-    top: -2px;
-    left: 24px;
-}
- .checkbox {
-    background-position: 0 -18px;
+.reg-form .btn-wrapper .agreement .checkbox {
+  top: -2px;
+  left: 24px;
 }
 .checkbox {
-    background: url('../assets/images/checkbox.png') 0 0 no-repeat;
-    float: left;
-    height: 20px;
-    width: 20px;
-    position: relative;
-    background-size: 20px;
+  background-position: 0 -18px;
+}
+.checkbox {
+  background: url("../assets/images/checkbox.png") 0 0 no-repeat;
+  float: left;
+  height: 20px;
+  width: 20px;
+  position: relative;
+  background-size: 20px;
 }
 
- .checkbox,  .checkbox a {
-    background-image: url('../assets/images/checkbox.png');
-    background-size: 22px auto;
-    width: 22px;
-    height: 22px;
+.checkbox,
+.checkbox a {
+  background-image: url("../assets/images/checkbox.png");
+  background-size: 22px auto;
+  width: 22px;
+  height: 22px;
 }
- .reg-form .btn-wrapper .agreement .checkbox {
-    margin-right: 8px;
+.reg-form .btn-wrapper .agreement .checkbox {
+  margin-right: 8px;
 }
- .reg-form .btn-wrapper .agreement .checkbox,  form .remember .auto .checkbox {
-    left: 0;
+.reg-form .btn-wrapper .agreement .checkbox,
+form .remember .auto .checkbox {
+  left: 0;
 }
 a {
-    color: #5079d9;
-    cursor: pointer;
-    text-decoration: none;
-    -moz-transition: all .3s ease;
-    -webkit-transition: all .3s ease;
-    -o-transition: all .3s ease;
-    transition: all .3s ease;
+  color: #5079d9;
+  cursor: pointer;
+  text-decoration: none;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
 }
 .btn.disabled {
-    cursor: not-allowed;
-    opacity: .6;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 .btn-primary {
-    background: #4C68B0;
-    box-shadow: 0 1px 1px -1px rgba(0,0,0,.8);
-    background: -webkit-linear-gradient(#6788d0,#4364bb);
-    background: linear-gradient(#6788d0,#4364bb);
-    padding: 1px;
-    box-sizing: border-box;
+  background: #4c68b0;
+  box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.8);
+  background: -webkit-linear-gradient(#6788d0, #4364bb);
+  background: linear-gradient(#6788d0, #4364bb);
+  padding: 1px;
+  box-sizing: border-box;
 }
 .btn {
-    border-radius: 6px;
-    cursor: pointer;
-    display: inline-block;
-    height: 33px;
-    line-height: 34px;
-    overflow: hidden;
-    text-align: center;
-    width: 153px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-block;
+  height: 33px;
+  line-height: 34px;
+  overflow: hidden;
+  text-align: center;
+  width: 153px;
 }
-.form .btn-wrapper .btn,  .btn-wrapper .btn {
-    height: 53px;
-    line-height: 53px;
+.form .btn-wrapper .btn,
+.btn-wrapper .btn {
+  height: 53px;
+  line-height: 53px;
 }
 
 .reg-form .btn-wrapper .btn {
-    width: 100%;
+  width: 100%;
 }
 .btn.disabled a {
-    cursor: not-allowed;
+  cursor: not-allowed;
 }
 
 .btn-primary a {
-    background: #81A8E4;
-    background: -webkit-linear-gradient(#6f94e8,#5178df);
-    background: -moz-linear-gradient(#6f94e8,#5178df);
-    background: -ms-linear-gradient(#6f94e8,#5178df);
-    background: -o-linear-gradient(#6f94e8,#5178df);
-    background: linear-gradient(#6f94e8,#5178df);
+  background: #81a8e4;
+  background: -webkit-linear-gradient(#6f94e8, #5178df);
+  background: -moz-linear-gradient(#6f94e8, #5178df);
+  background: -ms-linear-gradient(#6f94e8, #5178df);
+  background: -o-linear-gradient(#6f94e8, #5178df);
+  background: linear-gradient(#6f94e8, #5178df);
 }
 .btn a {
-    color: #FFF;
-    cursor: pointer;
-    display: block;
-    font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+  display: block;
+  font-size: 14px;
 }
-.form .btn-wrapper .btn a,  .btn-wrapper .btn a {
-    font-size: 18px;
-    text-shadow: 0 -1px rgba(0,0,0,.2);
-    height: 51px;
-    line-height: 51px;
-    border-radius: 6px;
+.form .btn-wrapper .btn a,
+.btn-wrapper .btn a {
+  font-size: 18px;
+  text-shadow: 0 -1px rgba(0, 0, 0, 0.2);
+  height: 51px;
+  line-height: 51px;
+  border-radius: 6px;
 }
- .reg-form .btn-wrapper .tologin {
-    margin: 35px 0 0;
-    padding-bottom: 20px;
+.reg-form .btn-wrapper .tologin {
+  margin: 35px 0 0;
+  padding-bottom: 20px;
 }
 .reg-form .btn-wrapper .tologin a {
-    color: #7f7f7f;
-    display: block;
+  color: #7f7f7f;
+  display: block;
 }
- .reg-form .btn-wrapper .tologin a span {
-    background: 0 0;
-    color: #5079d9;
-    margin: 0;
-    padding: 0 4px;
-    border-radius: 0;
+.reg-form .btn-wrapper .tologin a span {
+  background: 0 0;
+  color: #5079d9;
+  margin: 0;
+  padding: 0 4px;
+  border-radius: 0;
 }
 </style>

@@ -4,6 +4,7 @@
     <Search></Search>
     <Swiper/>
     <Panel></Panel>
+    <BackToTop />
     <Tabbar :offset='0'></Tabbar>
   </div>
 </template>
@@ -14,6 +15,7 @@ import Search from "../components/Search.vue";
 import Swiper from "../components/Swiper.vue";
 import Panel from "../components/Panel.vue";
 import Tabbar from "../components/tabbar.vue";
+import BackToTop from "../components/BackToTop.vue"
 
 export default {
   data(){
@@ -26,7 +28,8 @@ export default {
     Search,
     Swiper,
     Panel,
-    Tabbar
+    Tabbar,
+    BackToTop
   }
 }
 </script>
