@@ -4,124 +4,36 @@
     <div class="category-container">
       <section class="left-wrap">
         <ul class="first-list">
-          <li class="active">智能硬件</li>
-          <li class>smartisan</li>
-          <li class>鞋包服饰</li>
-          <li class>畅呼吸</li>
-          <li class>医药保健</li>
-          <li class>电脑办公</li>
+          <li v-for="(item, index) in goods" :key="index" :class="offset == index ? 'active':''" @click="highLight(index)">{{item.classifyName}}</li>
         </ul>
       </section>
       <section class="right-wrap">
         <section class="category-sub no-banner">
           <!---->
-          <section data-v-1cfc70d2 class="banner-wrap">
-            <div data-v-5079b9f0 data-v-1cfc70d2 class="index-swiper banner">
-              <div data-v-5079b9f0 class="swiper-slide">
-                <img
-                  data-v-5079b9f0
-                  src="https://resource.smartisan.com/resource/d86d3c67694cbd51ca4c2494afe7d462.jpg?x-oss-process=image/resize,w_750/format,webp"
+          <section v-if="igoods.banner.length>0" class="banner-wrap">
+            <div class="index-swiper banner">
+              <div  class="swiper-slide">
+                <img  
+                  :src="igoods.banner[0].image"
                   alt="banner"
                   class="banner-img"
                 />
               </div>
             </div>
           </section>
-          <section class="second-and-third-list">
-            <h1>坚果手机</h1>
+          <section v-for="(item, index) in igoods.second" :key="index" class="second-and-third-list">
+            <h1>{{item.classifyName}}</h1>
             <aside class="list-flex-wrap">
-              <figure class="flex-item">
+              <figure v-for="(ele, index) in item.third" :key="index" class="flex-item">
                 <div class="img-cover">
                   <img
                     alt="-"
-                    data-src="https://resource.smartisan.com/resource/06c2253354096f5e9ebf0616f1af2086.png"
-                    src="https://resource.smartisan.com/resource/06c2253354096f5e9ebf0616f1af2086.png"
+                    :data-src="ele.image"
+                    :src="ele.image"
                     lazy="loaded"
                   />
                 </div>
-                <figcaption class="title text-ellipsis">坚果 R1</figcaption>
-              </figure>
-              <figure class="flex-item">
-                <div class="img-cover">
-                  <img
-                    alt="-"
-                    data-src="https://resource.smartisan.com/resource/b07b9765e272f866da6acda4ee107d88.png"
-                    src="https://resource.smartisan.com/resource/b07b9765e272f866da6acda4ee107d88.png"
-                    lazy="loaded"
-                  />
-                </div>
-                <figcaption class="title text-ellipsis">坚果 Pro 2S</figcaption>
-              </figure>
-              <figure class="flex-item">
-                <div class="img-cover">
-                  <img
-                    alt="-"
-                    data-src="https://resource.smartisan.com/resource/13e91511f6ba3227ca5378fd2e93c54b.png"
-                    src="https://resource.smartisan.com/resource/13e91511f6ba3227ca5378fd2e93c54b.png"
-                    lazy="loaded"
-                  />
-                </div>
-                <figcaption class="title text-ellipsis">坚果 3</figcaption>
-              </figure>
-            </aside>
-          </section>
-          <section class="second-and-third-list">
-            <h1>数码配件</h1>
-            <aside class="list-flex-wrap">
-              <figure class="flex-item">
-                <div class="img-cover">
-                  <img
-                    alt="-"
-                    data-src="https://resource.smartisan.com/resource/82aab62886740f165a3631ce6cffe895.jpg"
-                    src="https://resource.smartisan.com/resource/82aab62886740f165a3631ce6cffe895.jpg"
-                    lazy="loaded"
-                  />
-                </div>
-                <figcaption class="title text-ellipsis">数据线</figcaption>
-              </figure>
-              <figure class="flex-item">
-                <div class="img-cover">
-                  <img
-                    alt="-"
-                    data-src="https://resource.smartisan.com/resource/dc53bd870ee64d2053ecc51750ece43a.jpg"
-                    src="https://resource.smartisan.com/resource/dc53bd870ee64d2053ecc51750ece43a.jpg"
-                    lazy="loaded"
-                  />
-                </div>
-                <figcaption class="title text-ellipsis">充电器</figcaption>
-              </figure>
-              <figure class="flex-item">
-                <div class="img-cover">
-                  <img
-                    alt="-"
-                    data-src="https://resource.smartisan.com/resource/ce632bd67465027861707ec221b37c2d.jpg"
-                    src="https://resource.smartisan.com/resource/ce632bd67465027861707ec221b37c2d.jpg"
-                    lazy="loaded"
-                  />
-                </div>
-                <figcaption class="title text-ellipsis">线控耳机</figcaption>
-              </figure>
-              <figure class="flex-item">
-                <div class="img-cover">
-                  <img
-                    alt="-"
-                    data-src="https://resource.smartisan.com/resource/33954b3f6a2f1614c5482ef130af9cc8.jpg"
-                    src="https://resource.smartisan.com/resource/33954b3f6a2f1614c5482ef130af9cc8.jpg"
-                    lazy="loaded"
-                  />
-                </div>
-                <figcaption class="title text-ellipsis">移动电源</figcaption>
-              </figure>
-              <figure class="flex-item">
-                <div class="img-cover">
-                  <img
-                    alt="-"
-                    data-src="https://resource.smartisan.com/resource/f55641e23f35f6dd82226b6c4a043f00.jpg"
-                    src="https://resource.smartisan.com/resource/f55641e23f35f6dd82226b6c4a043f00.jpg"
-                    lazy="loaded"
-                  />
-                </div>
-                <figcaption class="title text-ellipsis">拍照配件</figcaption>
+                <figcaption class="title text-ellipsis">{{ele.classifyName}}</figcaption>
               </figure>
             </aside>
           </section>
@@ -138,16 +50,24 @@ import Tabbar from "../components/tabbar.vue";
 export default {
   data() {
     return {
-      goods: []
+      offset: 0,   //默认第一个高亮
+      goods: [],
+      igoods: []
     }
   },
   methods: {
     getClassify(){
       let _self = this;
       this.axios.get('http://localhost:3000/classify').then(data=>{
-        console.log(data);
-        _self.goods = data.data.goods;
+        console.log(data.data.goods[0].data);
+        _self.goods = data.data.goods[0].data;
+        _self.igoods = data.data.goods[0].data[0];    //默认进来显示第一个分类
       })
+    },
+    highLight(index){
+      this.offset = index;
+      this.igoods = this.goods[index];     //根据索引获取对应的分类数据
+      console.log(this.igoods);
     }
   },
   mounted() {
@@ -181,7 +101,7 @@ export default {
 .category-container .left-wrap {
   position: absolute;
   left: 0;
-  height: 100%;
+  /* height: 100%; */
   width: 5rem;
   -webkit-box-shadow: 1px 0 0 hsla(0, 0%, 40%, 0.1);
   box-shadow: 1px 0 0 hsla(0, 0%, 40%, 0.1);

@@ -114,7 +114,7 @@
                 </span> 自动登录
               </div>
               <a class="forgotpassword ng-binding" ng-click="forgotPassword()">忘记密码</a>
-              <a class="registercloud ng-binding" @click="gotoRigist">注册</a>
+              <a class="registercloud ng-binding" @click="gotoRegist">注册</a>
             </li>
           </ul>
           <div class="btn-wrapper">
@@ -163,14 +163,14 @@ export default {
     };
   },
   methods: {
-    gotoRigist(){
+    gotoRegist(){
       this.username = '';
       this.password = '';
       this.$router.push('regist');
     },
     login(){
       if(this.username === '' || this.password === ''){
-        alert('请输入用户名或密码')
+        alert('请输入用户名或密码');
       }else{
         localStorage.setItem('username',JSON.stringify(this.username));
         localStorage.setItem('password',JSON.stringify(this.password));
@@ -185,6 +185,9 @@ export default {
         }).then(res=>{
           console.log(res);
           if(res.data.status == 200){
+            // localStorage.setItem('isLogin',JSON.stringify(true));
+            this.setToken('isLogin',true);
+            this.$store.commit('isLogin',true);
             this.$router.push('/');
           }
         })
@@ -294,9 +297,11 @@ video {
   font: inherit;
   vertical-align: baseline;
 }
-header{
+header {
   height: 3.2rem;
   padding: 0 10px;
+  font-size: 18px;
+  line-height: 20px;
 }
 .box {
   min-width: inherit;

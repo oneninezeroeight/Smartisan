@@ -357,6 +357,8 @@ export default {
 header {
   height: 3.2rem;
   padding: 0 10px;
+  font-size: 18px;
+  line-height: 20px;
 }
 .box {
   min-width: inherit;

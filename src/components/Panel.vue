@@ -7,6 +7,7 @@
       <section
         v-for="(item, index) in goods"
         :key="index"
+        @click="gotoDetail(item)"
         class="sku-item-normal-box flow-item guess-like-item"
       >
         <figure class="item-cover">
@@ -52,6 +53,16 @@ export default {
         console.log(data.data);
         _self.goods = data.data.goods;
       });
+    },
+    gotoDetail(item){
+      const skuId = item.skuId;
+      console.log('gotoDetail',skuId);
+      this.$router.push({
+        path: 'detail',
+        query: {
+          skuId
+        }
+      })
     }
   },
   mounted() {
@@ -66,7 +77,7 @@ export default {
 }
 .home-box {
   position: relative;
-  /* padding-top: 0.7rem; */
+  margin-top: 0.8rem;
 }
 .home-box .headline-wrap {
   position: relative;

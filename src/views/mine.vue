@@ -24,7 +24,7 @@
                       _ngcontent-c17
                       src="//static.smartisanos.cn/account/asset/img/default-user-avatar.png"
                     />
-                  </div>登录/注册
+                  </div>{{msg}}
                 </div>
 
                 <ul _ngcontent-c17 class="common-box menu-list-parallel box-order">
@@ -169,7 +169,7 @@ import Tabbar from "../components/tabbar.vue";
 export default {
   data() {
     return {
-     
+      msg: '登录/注册'
     };
   },
   components: {
@@ -180,6 +180,13 @@ export default {
       this.$router.push("/login");
       console.log("goto login");
     }
+  },
+  created: function(){
+    let isLogin = this.$store.getters.isLogin;
+    console.log('isLogin:',isLogin);
+    if(isLogin){
+      this.msg = JSON.parse(localStorage.getItem('username'));
+    }
   }
 };
 </script>
@@ -189,9 +196,11 @@ ol,
 ul {
   list-style: none;
 }
-header{
+header {
   height: 3.2rem;
   padding: 0 10px;
+  font-size: 18px;
+  line-height: 20px;
 }
 .main-wrapper.is-bottom-shown[_ngcontent-c0] {
   padding-bottom: 54px;

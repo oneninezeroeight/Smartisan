@@ -21,7 +21,7 @@ export default {
       let timer = setInterval(()=>{
         let ispeed = Math.floor(-that.scrollToTop / 5);
         document.documentElement.scrollTop = document.body.scrollTop = that.scrollTop + ispeed;
-        if(that.scrollToTop === 0){
+        if(that.scrollTop === 0){
           clearInterval(timer);
         }
       },16)
@@ -32,6 +32,7 @@ export default {
       that.scrollTop = scrollTop;
       if(that.scrollTop > 100){
         that.btnFlag = true;
+        // console.log(this.scrollTop)
       }else{
         that.btnFlag = false;
       }
