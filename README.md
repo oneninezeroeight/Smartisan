@@ -1,6 +1,6 @@
 # Smartisan
 
-> This is a "锤子" app writed by Vue
+> This is a "锤子" app written by Vue. The author is He Huan (何欢).
 
 ## Build Setup
 
