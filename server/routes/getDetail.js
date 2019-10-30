@@ -7,7 +7,7 @@ router.get(`/`, async function(req, res, next) {
   // let skuid = req.query.skuId * 1;
   let skuId = Number(req.query.skuId);
   console.log(typeof skuId,skuId);
-  let item =  await find('goods',{"skuId":skuId});
+  let item =  await find('goodlist',{"skuId":skuId});
   res.json({item});
 });
 

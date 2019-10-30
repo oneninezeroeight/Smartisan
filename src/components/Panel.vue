@@ -50,7 +50,7 @@ export default {
     getGoods() {
       let _self = this;
       axios.get("http://localhost:3000/goods").then(data => {
-        console.log(data.data);
+        console.log(data);
         _self.goods = data.data.goods;
       });
     },

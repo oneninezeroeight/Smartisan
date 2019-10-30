@@ -5,16 +5,30 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state:{
-    isLogin: false
+    isLogin: false,
+    isBuyNow: false,
+    isAddToCart: false
   },
   getters:{
-    isLogin: state => state.isLogin
+    isLogin: state => state.isLogin,
+    isBuyNow: state => state.isBuyNow,
+    isAddToCart: state => state.isAddToCart
   },
   mutations:{
     isLogin(state,msg){
       state.isLogin = msg;
       // this.setToken('isLogin',msg);
       localStorage.setItem('isLogin',JSON.stringify(msg));
+    },
+    isBuyNow(state,msg){
+      state.isBuyNow = msg;
+      // this.setToken('isLogin',msg);
+      // localStorage.setItem('isLogin',JSON.stringify(msg));
+    },
+    isAddToCart(state,msg){
+      state.isAddToCart = msg;
+      // this.setToken('isLogin',msg);
+      // localStorage.setItem('isLogin',JSON.stringify(msg));
     }
   }
  /*  actions:{

@@ -58,7 +58,7 @@ export default new Router({
     {
       path: '/checkout',
       name: 'checkout',
-      // component: () => import( '../views/checkout.vue'),
+      component: () => import( '../views/checkout.vue'),
       meta:{
         requireAuth: true
       }

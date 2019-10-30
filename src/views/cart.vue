@@ -162,6 +162,13 @@ export default {
     let isLogin = this.$store.getters.isLogin;
     if(isLogin){
       this.isLogin = true
+      console.log('this is cart');
+      let cart = JSON.parse(localStorage.getItem('cart'));    //获取购物车商品信息id+num
+      let count = cart.length;
+      console.log(typeof cart,cart,count);
+      if(count>0){
+        
+      }
     }
   },
   components: {

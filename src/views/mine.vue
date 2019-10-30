@@ -164,7 +164,7 @@
 </template>
 
 <script>
-import Header2 from "../components/Header2.vue";
+// import Header2 from "../components/Header2.vue";
 import Tabbar from "../components/tabbar.vue";
 export default {
   data() {
