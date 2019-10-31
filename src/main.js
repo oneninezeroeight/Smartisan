@@ -32,28 +32,63 @@ Vue.prototype.getToken = function (name) {
     return '';
   }
 };
+Vue.prototype.setCookie = function (c_name, value, expiredays) {
+  var exdate = new Date();
+  exdate.setDate(exdate.getDate() + expiredays);
+  document.cookie = c_name + "=" + escape(value);
+  expires = " + exdate.toGMTString() + ";
+  path = "/";
+};
+Vue.prototype.getCookie = function (c_name) {
+  if (document.cookie.length > 0) {
+    c_start = document.cookie.indexOf(c_name + "=")
+    if (c_start != -1) {
+      c_start = c_start + c_name.length + 1
+      c_end = document.cookie.indexOf(";", c_start)
+      if (c_end == -1)
+        c_end = document.cookie.length
+      return unescape(document.cookie.substring(c_start, c_end))
+    }
+  }
+  return ""
+};
+Vue.prototype.checkCookie = function (c_name) {
+  username = getCookie(c_name);
+  console.log(username);
+  if (username != null && username != "") {
+    return true;
+  } else {
+    return false;
+  }
+};
+Vue.prototype.clearCookie = function(name){
+  this.setCookie(name,"",-1);
+}
+
+
+
 Vue.use(mintUI);
 
 Vue.config.productionTip = false
 
 // 挂载路由守卫
-router.beforeEach((to,from,next)=>{
-  setTimeout((res)=>{
-    if(to.meta.requireAuth){
-      if(store.state.isLogin){
+router.beforeEach((to, from, next) => {
+  setTimeout((res) => {
+    if (to.meta.requireAuth) {
+      if (store.state.isLogin) {
         next();
-      }else{
+      } else {
         next({
           path: '/login',
-          query:{
-            redirect:to.fullPath
+          query: {
+            redirect: to.fullPath
           }
         })
       }
-    }else{
+    } else {
       next();
     }
-  },100)
+  }, 100)
 });
 
 
@@ -66,10 +101,10 @@ new Vue({
   },
   template: '<App/>',
   created() {
-    if(this.getToken('isLogin') == null){
-      this.setToken('isLogin','');
+    if (this.getToken('isLogin') == null) {
+      this.setToken('isLogin', '');
     }
     this.$store.state.isLogin = this.getToken('isLogin');
-    console.log('isLogin:',this.$store.state.isLogin);
+    console.log('isLogin:', this.$store.state.isLogin);
   },
 })

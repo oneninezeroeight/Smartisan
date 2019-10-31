@@ -24,7 +24,8 @@
             <span class="yuan">¥</span>
             <span v-text="item.originalPrice"></span>
             <span v-if="item.discountPrice>0" class="orignal">
-              <span v-if="item.discountPrice>0" class="yuan">¥</span>{{item.discountPrice}}
+              <span v-if="item.discountPrice>0" class="yuan">¥</span>
+              {{item.discountPrice}}
             </span>
           </aside>
           <aside v-if="item.promotionList.length>0" class="item-promotion-tags">
@@ -54,15 +55,15 @@ export default {
         _self.goods = data.data.goods;
       });
     },
-    gotoDetail(item){
+    gotoDetail(item) {
       const skuId = item.skuId;
-      console.log('gotoDetail',skuId);
+      console.log("gotoDetail", skuId);
       this.$router.push({
-        path: 'detail',
+        path: "detail",
         query: {
           skuId
         }
-      })
+      });
     }
   },
   mounted() {
@@ -188,11 +189,11 @@ img {
   color: #d44d44;
 }
 .item-bottom-info .item-price .orignal {
-    position: relative;
-    margin-left: 5px;
-    font-size: .5rem;
-    color: #ccc;
-    font-weight: 400;
+  position: relative;
+  margin-left: 5px;
+  font-size: 0.5rem;
+  color: #ccc;
+  font-weight: 400;
 }
 .guesslike-wrap .guess-like-item .item-price .yuan {
   font-size: 0.55rem;

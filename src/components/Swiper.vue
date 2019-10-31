@@ -2,6 +2,9 @@
   <swiper :options="swiperOption" ref="mySwiper">
     <!-- slides -->
     <swiper-slide>
+      <img src="../assets/images/banner4.png" alt />
+    </swiper-slide>
+    <swiper-slide>
       <img src="../assets/images/banner1.png" alt />
     </swiper-slide>
     <swiper-slide>

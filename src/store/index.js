@@ -7,12 +7,14 @@ export default new Vuex.Store({
   state:{
     isLogin: false,
     isBuyNow: false,
-    isAddToCart: false
+    isAddToCart: false,
+    isEdit: false
   },
   getters:{
     isLogin: state => state.isLogin,
     isBuyNow: state => state.isBuyNow,
-    isAddToCart: state => state.isAddToCart
+    isAddToCart: state => state.isAddToCart,
+    isEdit: state => state.isEdit
   },
   mutations:{
     isLogin(state,msg){
@@ -22,13 +24,12 @@ export default new Vuex.Store({
     },
     isBuyNow(state,msg){
       state.isBuyNow = msg;
-      // this.setToken('isLogin',msg);
-      // localStorage.setItem('isLogin',JSON.stringify(msg));
     },
     isAddToCart(state,msg){
       state.isAddToCart = msg;
-      // this.setToken('isLogin',msg);
-      // localStorage.setItem('isLogin',JSON.stringify(msg));
+    },
+    isEdit(state,msg){
+      state.isEdit = msg;
     }
   }
  /*  actions:{

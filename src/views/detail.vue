@@ -421,7 +421,7 @@
             <li _ngcontent-c18 class="cart-entry">
               <a _ngcontent-c18 target="_self" href="/cart">
                 <div _ngcontent-c18 class="tag">
-                  <span _ngcontent-c18>2</span>
+                  <span _ngcontent-c18>{{cartCount}}</span>
                 </div>
                 <img
                   _ngcontent-c18
@@ -472,11 +472,11 @@
                         <img
                           _ngcontent-c20
                           alt
-                          src="https://resource.smartisan.com/resource/32ee5c79f8b53fd6724530103f7c85bf.png?x-oss-process=image/format,webp"
+                          :src="res.images"
                         />
                       </div>
                       <div _ngcontent-c20 class="goods-info">
-                        <h4 _ngcontent-c20>落栗 衬衫 牛津纺</h4>
+                        <h4 _ngcontent-c20>{{res.skuTitle}}</h4>
                         <p _ngcontent-c20>
                           <span _ngcontent-c20>S</span>
                           <span _ngcontent-c20>白</span>
@@ -484,7 +484,7 @@
 
                         <div _ngcontent-c20 class="price">
                           <i>¥</i>
-                          <span>199.00</span>
+                          <span>{{res.originalPrice}}</span>
                         </div>
                       </div>
                     </div>
@@ -966,6 +966,7 @@ export default {
       isClicked: false,
       opacity: 0,
       tips: 0,
+      cartCount: 0,
       swiperOption: {
         pagination: ".swiper-pagination1",
         centeredSlides: false,
@@ -996,8 +997,15 @@ export default {
     this.axios.get(`http://localhost:3000/detail?skuId=${skuId}`).then(data => {
       this.skuTitle = data.data.item[0].skuTitle;
       this.res = data.data.item[0];
-      console.log(this.res);
+      console.log('商品数据：',this.res);
     });
+
+    let cart = JSON.parse(localStorage.getItem('cart'));
+    console.log(cart);
+    cart.forEach(ele=>{
+      this.cartCount += ele.num;
+    });
+    console.log(this.cartCount);
   },
   methods: {
     buyNow() {
@@ -1040,7 +1048,12 @@ export default {
         console.log(skuid); */
         let flag = 0;
         let good = {
+          username: JSON.parse(localStorage.getItem('username')),
           skuid: this.$route.query.skuId,
+          skutitle: this.res.skuTitle,
+          image: this.res.images,
+          price: this.res.originalPrice,
+          isChecked: true,
           num: 1
         };
         let goods = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
@@ -1068,6 +1081,10 @@ export default {
 </script>
 
 <style scoped>
+/* a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {
+    margin: 0;
+    padding: 0;
+} */
 header {
   height: 3.2rem;
   padding: 0 10px;
@@ -1829,14 +1846,14 @@ li.cart-entry[_ngcontent-c18] a[_ngcontent-c18] .tag[_ngcontent-c18] {
   box-sizing: border-box;
   left: 1.45rem;
   top: -0.61667rem;
-  height: 2.4rem;
+  height: 2.6rem;
   min-width: 2.4rem;
   line-height: 1.6;
   text-align: center;
   padding: 0 0.783rem;
   border-radius: 1.2rem;
   background: #d44e45;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: #fff;
   text-shadow: 0 -2px 0 rgba(0, 0, 0, 0.06);
@@ -1955,7 +1972,7 @@ ul.box-line[_ngcontent-c18]:after {
   background: #f7f7f7;
   background-image: linear-gradient(#fefefe, #f6f6f6);
   flex-shrink: 0;
-  height: 5.4rem;
+  height: 7.4rem;
 }
 
 .bottom-dialog[_ngcontent-c20],
@@ -1967,8 +1984,8 @@ ul.box-line[_ngcontent-c18]:after {
   display: inline-block;
   position: relative;
   top: -1.2rem;
-  width: 5.3rem;
-  height: 5.3rem;
+  width: 6.4rem;
+  height: 6.4rem;
   background: #fff;
   margin: 0.6rem;
   padding: 0.5rem;
@@ -1995,7 +2012,7 @@ ul.box-line[_ngcontent-c18]:after {
   flex-grow: 1;
 }
 .dialog-header[_ngcontent-c20] .goods-info[_ngcontent-c20] h4[_ngcontent-c20] {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   margin-bottom: 0.3rem;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -2037,7 +2054,7 @@ ul.box-line[_ngcontent-c18]:after {
 }
 .price[_ngcontent-c20] i {
   font-style: normal;
-  font-size: 0.6rem;
+  font-size: 0.8rem;
 }
 .price[_ngcontent-c20] span {
   font-size: 0.8rem;

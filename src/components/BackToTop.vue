@@ -9,12 +9,6 @@ export default {
       btnFlag: false
     }
   },
-  mounted() {
-    window.addEventListener('scroll',this.scrollToTop)
-  },
-  destroyed() {
-    window.removeEventListener('scroll',this.scrollToTop)
-  },
   methods: {
     backTop(){
       const that = this;
@@ -37,6 +31,12 @@ export default {
         that.btnFlag = false;
       }
     }
+  },
+   mounted() {
+    window.addEventListener('scroll',this.scrollToTop)
+  },
+  destroyed() {
+    window.removeEventListener('scroll',this.scrollToTop)
   },
 };
 </script>
