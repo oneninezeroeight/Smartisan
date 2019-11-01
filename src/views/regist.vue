@@ -334,7 +334,7 @@ export default {
         localStorage.setItem("username", JSON.stringify(this.username));
         localStorage.setItem("password", JSON.stringify(this.password));
 
-        const registUrl = "http://localhost:3000/regist";
+        const registUrl = "http://localhost/regist";
         let params = new URLSearchParams();
         params.append("username", this.username);
         params.append("password", this.password);
@@ -755,11 +755,11 @@ a {
 
 .btn-primary a {
   background: #81a8e4;
-  background: -webkit-linear-gradient(#6f94e8, #5178df);
-  background: -moz-linear-gradient(#6f94e8, #5178df);
-  background: -ms-linear-gradient(#6f94e8, #5178df);
-  background: -o-linear-gradient(#6f94e8, #5178df);
-  background: linear-gradient(#6f94e8, #5178df);
+  background: -webkit-linear-gradient(#1256ef, #112be0);
+  background: -moz-linear-gradient(#1256ef, #112be0);
+  background: -ms-linear-gradient(#1256ef, #112be0);
+  background: -o-linear-gradient(#1256ef, #112be0);
+  background: linear-gradient(#1256ef, #112be0);
 }
 .btn a {
   color: #fff;

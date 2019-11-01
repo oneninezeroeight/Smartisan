@@ -80,6 +80,14 @@ export default new Router({
       }
     },
     {
+      path: '/pay',
+      name: 'pay',
+      component: () => import( '../views/pay.vue'),
+      meta:{
+        requireAuth: true
+      }
+    },
+    {
       path: '/index',
       redirect: '/'
     }

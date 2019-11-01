@@ -994,7 +994,7 @@ export default {
     // const skuid = this.$route.params.skuid;
     const skuId = this.$route.query.skuId;
     console.log("detail", skuId);
-    this.axios.get(`http://localhost:3000/detail?skuId=${skuId}`).then(data => {
+    this.axios.get(`http://localhost/detail?skuId=${skuId}`).then(data => {
       this.skuTitle = data.data.item[0].skuTitle;
       this.res = data.data.item[0];
       console.log('商品数据：',this.res);

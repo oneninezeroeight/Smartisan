@@ -91,13 +91,13 @@
                                   <p _ngcontent-c10 class="price">
                                     <span _ngcontent-c10>
                                       <i>¥</i>
-                                      <span>{{item.price}}</span>
+                                      <span>{{item.price - 10}}</span>
                                     </span>
                                     <span _ngcontent-c10 class="sum smartisan-icon">{{item.num}}</span>
                                   </p>
                                   <p _ngcontent-c10 class="original-price">
                                     <i>¥</i>
-                                    <span>{{item.price - 100}}</span>
+                                    <span>{{item.price}}</span>
                                   </p>
                                 </div>
                               </div>

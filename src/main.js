@@ -65,8 +65,6 @@ Vue.prototype.clearCookie = function(name){
   this.setCookie(name,"",-1);
 }
 
-
-
 Vue.use(mintUI);
 
 Vue.config.productionTip = false

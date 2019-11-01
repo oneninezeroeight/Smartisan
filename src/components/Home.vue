@@ -45,7 +45,7 @@ export default {
   methods: {
     getGoods() {
       let _self = this;
-      this.axios.get("http://localhost:3000/home").then(data => {
+      this.axios.get("http://localhost/home").then(data => {
         // console.log(data.data.goods);
         let result = data.data.goods;
         // console.log(result[0].data.slice(1));

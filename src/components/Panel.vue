@@ -44,17 +44,38 @@ export default {
   data() {
     return {
       title: "猜你喜欢",
-      goods: []
+      goods: [],
+      EVENT_DATA_FLOW : "ajax_data_pulled",
+      CURRENT_PAGE_INDEX : 1,
+      LOCK_STATUS : false,
+      loading: true,
     };
   },
   methods: {
     getGoods() {
       let _self = this;
-      axios.get("http://localhost:3000/goods").then(data => {
+      axios.get("http://localhost/goods").then(data => {
         console.log(data);
         _self.goods = data.data.goods;
       });
     },
+    // loadMore: function(){
+    //   this.busy = true;
+    //   let self = this;
+    //   this.axios.get('http://localhost/goods',{
+    //     params:{
+    //       page: self.pageIndex
+    //     }
+    //   }).then(res=>{
+    //     if(this.pageIndex > 3) return false;
+    //     console.log(res);
+    //     this.goods = res.data.goods;
+    //     this.pageIndex ++;
+    //   }).catch(error=>{
+    //     this.error = error; 
+    //   });
+    //   this.busy = false;
+    // },
     gotoDetail(item) {
       const skuId = item.skuId;
       console.log("gotoDetail", skuId);

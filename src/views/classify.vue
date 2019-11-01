@@ -58,7 +58,7 @@ export default {
   methods: {
     getClassify(){
       let _self = this;
-      this.axios.get('http://localhost:3000/classify').then(data=>{
+      this.axios.get('http://localhost/classify').then(data=>{
         console.log(data.data.goods[0].data);
         _self.goods = data.data.goods[0].data;
         _self.igoods = data.data.goods[0].data[0];    //默认进来显示第一个分类
