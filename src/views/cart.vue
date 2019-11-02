@@ -1,7 +1,7 @@
 <template>
   <div>
     <header data-v-c7dd8b8c class="mint-header">
-      <div class="mint-header-button is-left">
+     <!--  <div class="mint-header-button is-left">
         <a data-v-c7dd8b8c href="/" class="router-link-active">
           <button data-v-c7dd8b8c class="mint-button mint-button--default mint-button--normal">
             <span class="mint-button-icon">
@@ -10,7 +10,10 @@
             <label class="mint-button-text"></label>
           </button>
         </a>
-      </div>
+      </div> -->
+      <router-link to="/" slot="left">
+        <mt-button icon="back" @click="$router.back(-1)"></mt-button>
+      </router-link>
       <h1 class="mint-header-title">购物车</h1>
       <div class="mint-header-button is-right">
         <button data-v-c7dd8b8c class="mint-button mint-button--default mint-button--normal">
@@ -567,6 +570,13 @@ header {
   left: 0;
   right: 0;
   z-index: 199;
+}
+.mint-header-title{
+  margin-left: 5rem;
+}
+.mintui-back::before {
+    content: "\E600";
+    color: white;
 }
 h4 {
   margin: 0;

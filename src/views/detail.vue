@@ -2,7 +2,7 @@
   <div>
     <mt-header :title="skuTitle">
       <router-link to="/" slot="left">
-        <mt-button icon="back"></mt-button>
+        <mt-button icon="back" @click="$router.back(-1)"></mt-button>
       </router-link>
       <mt-button icon="more" slot="right"></mt-button>
     </mt-header>

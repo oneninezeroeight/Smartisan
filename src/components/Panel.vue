@@ -45,37 +45,62 @@ export default {
     return {
       title: "猜你喜欢",
       goods: [],
-      EVENT_DATA_FLOW : "ajax_data_pulled",
-      CURRENT_PAGE_INDEX : 1,
-      LOCK_STATUS : false,
-      loading: true,
+      current_index: 0,
+      list_param: { page: 1 ,start: 0},
+      no_data: false,
+      has_log: 0
     };
   },
+  created() {
+    /* this.axios({
+      method: "post",
+      url: "http://localhost/goods",
+      data: this.list_param
+    }).then(data => {
+      this.goods = data.data.goods;
+      this.list_param.page += 1;
+    }); */
+    window.addEventListener("scroll", this.onScroll);
+  },
   methods: {
-    getGoods() {
-      let _self = this;
-      axios.get("http://localhost/goods").then(data => {
-        console.log(data);
-        _self.goods = data.data.goods;
-      });
+
+    onScroll() {
+      this.has_log = 1;
+      let innerHeight = document.querySelector("#app").clientHeight;
+      let outerHeight = document.documentElement.clientHeight;
+      let scrollTop = document.documentElement.scrollTop;
+      console.log(
+        innerHeight,
+        outerHeight,
+        scrollTop,
+        innerHeight - 49,
+        outerHeight + scrollTop
+      );
+      if (outerHeight + scrollTop == innerHeight - 49) {
+        if (this.no_data === true) {
+          this.has_log = 2;
+          return false;
+        }
+        this.axios({
+          method: "post",
+          url: "http://localhost/goods",
+          data: this.list_param
+        }).then(data => {
+          console.log(data);
+          if (data.data.goods.length > 0) {
+            this.goods = [...this.goods, ...data.data.goods];
+            this.list_param.page = this.list_param.page + 1;
+            this.list_param.start = this.list_param.start + 10;
+            this.has_log = 0;
+          } else {
+            this.has_log = 2;
+            this.no_data = true;
+            console.log("no_data");
+          }
+        });
+      }
     },
-    // loadMore: function(){
-    //   this.busy = true;
-    //   let self = this;
-    //   this.axios.get('http://localhost/goods',{
-    //     params:{
-    //       page: self.pageIndex
-    //     }
-    //   }).then(res=>{
-    //     if(this.pageIndex > 3) return false;
-    //     console.log(res);
-    //     this.goods = res.data.goods;
-    //     this.pageIndex ++;
-    //   }).catch(error=>{
-    //     this.error = error; 
-    //   });
-    //   this.busy = false;
-    // },
+
     gotoDetail(item) {
       const skuId = item.skuId;
       console.log("gotoDetail", skuId);
@@ -88,7 +113,10 @@ export default {
     }
   },
   mounted() {
-    this.getGoods();
+    // this.getGoods();
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.onScroll);
   }
 };
 </script>

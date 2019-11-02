@@ -8,13 +8,15 @@ export default new Vuex.Store({
     isLogin: false,
     isBuyNow: false,
     isAddToCart: false,
-    isEdit: false
+    isEdit: false,
+    payMethod: 0
   },
   getters:{
     isLogin: state => state.isLogin,
     isBuyNow: state => state.isBuyNow,
     isAddToCart: state => state.isAddToCart,
-    isEdit: state => state.isEdit
+    isEdit: state => state.isEdit,
+    payMethod: state => state.payMethod
   },
   mutations:{
     isLogin(state,msg){
@@ -30,6 +32,9 @@ export default new Vuex.Store({
     },
     isEdit(state,msg){
       state.isEdit = msg;
+    },
+    payMethod(state,msg){
+      state.payMethod = msg;
     }
   }
  /*  actions:{

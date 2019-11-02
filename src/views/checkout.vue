@@ -1,8 +1,8 @@
 <template>
   <div>
     <mt-header :title="title">
-      <router-link to="/" slot="left">
-        <mt-button icon="back"></mt-button>
+      <router-link to="" slot="left">
+        <mt-button icon="back" @click="$router.back(-1)"></mt-button>
       </router-link>
       <mt-button icon="more" slot="right"></mt-button>
     </mt-header>
@@ -30,10 +30,16 @@
                 <h2 _ngcontent-c9 class="title">支付方式</h2>
               </div>
               <ul _ngcontent-c9 class="payment-items">
-                <li _ngcontent-c9 v-for="(item, index) in payMent" :key="index" @click="selectPay(index)" :class="['item', item.li ,{active:item.num === index}]">
+                <li
+                  _ngcontent-c9
+                  v-for="(item, index) in payMent"
+                  :key="index"
+                  @click="selectPay(index)"
+                  :class="['item', item.li ,{active: active == index}]"
+                >
                   <span _ngcontent-c9 class="name">{{item.name}}</span>
 
-                  <span _ngcontent-c9 :class="['payment-check' ,{active:item.num === index}]"></span>
+                  <span _ngcontent-c9 :class="['payment-check' ,{active:  active == index}]"></span>
                 </li>
               </ul>
 
@@ -82,10 +88,7 @@
             <div v-for="(item, index) in order" :key="index" _ngcontent-c8 class="content">
               <div _ngcontent-c8 class="goods-img">
                 <a _ngcontent-c8>
-                  <img
-                    _ngcontent-c8
-                    :src="item.image"
-                  />
+                  <img _ngcontent-c8 :src="item.image" />
                 </a>
               </div>
               <div _ngcontent-c8 class="goods-info">
@@ -462,45 +465,52 @@ export default {
       payMoney: 0,
       disCount: 0,
       freight: 0,
-      payMent:[{
-        "li":"wechat-pay",
-        "name":"微信支付",
-        "num": 0
-      },{
-        "li":"ali-pay",
-        "name":"支付宝",
-        "num": null
-      },{
-        "li":"ant stages-pay",
-        "name":"蚂蚁花呗分期",
-        "num": null
-      }]
+      active: 0,
+      payMent: [
+        {
+          li: "wechat-pay",
+          name: "微信支付"
+        },
+        {
+          li: "ali-pay",
+          name: "支付宝"
+        },
+        {
+          li: "ant stages-pay",
+          name: "蚂蚁花呗分期"
+        }
+      ]
     };
   },
   created() {
-    this.order = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')):[];
+    this.order = localStorage.getItem("cart")
+      ? JSON.parse(localStorage.getItem("cart"))
+      : [];
     console.log(this.order);
-    if(this.order){
-      this.order.forEach(ele=>{
-        this.allNum += ele.num;
-        this.countMoney += ele.num * ele.price;
-        this.disCount += ele.num * 10;
+    if (this.order) {
+      this.order.forEach(ele => {
+        this.allNum += ele.num;   
+        this.countMoney += ele.num * ele.price;     //商品总计
+        this.disCount += ele.num * 10;                //优惠
       });
-      this.payMoney = this.countMoney - this.disCount + this.freight;
-      console.log(this.allNum,this.countMoney,this.payMoney);
-    }else{
+      this.payMoney = this.countMoney - this.disCount + this.freight;    //应付金额
+      console.log(this.allNum, this.countMoney, this.payMoney);
+    } else {
       this.allNum = 0;
       this.countMoney = 0;
     }
   },
   methods: {
-    selectPay(index){
-      this.payMent[index].num = index;
+    selectPay(index) {
+      this.active = index;
+      console.log(this.active);
     },
-    payNow(){
-      this.$router.push('/pay');
+    payNow() {
+      this.$router.push("/pay");
+      console.log("payIndex", this.active);
+      this.$store.commit('payMethod',this.active);    //设置支付方式  0：WeChat   1：AliPay   3：蚂蚁花呗
     }
-  },
+  }
 };
 </script>
 
@@ -516,590 +526,802 @@ header {
   right: 0;
   z-index: 199;
 }
-h2,h3{
+h2,
+h3 {
   margin: 0;
 }
 .main-wrapper.is-header-shown[_ngcontent-c0] {
-    margin-top: 50px;
+  margin-top: 50px;
 }
 .main-wrapper[_ngcontent-c0] {
-    overflow: scroll;
+  overflow: scroll;
 }
 .order-wrapper[_ngcontent-c8] {
-    background: #e4e4e4;
+  background: #e4e4e4;
 }
 .order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] {
-    background: #fff;
-    border-bottom: 1px solid #d1d1d1;
-    border-top: 1px solid #d1d1d1;
+  background: #fff;
+  border-bottom: 1px solid #d1d1d1;
+  border-top: 1px solid #d1d1d1;
 }
 .order-wrapper[_ngcontent-c8] .order-address[_ngcontent-c8] {
-    background: #fff;
-    box-shadow: 0 -2px 2px #f0f0f0;
+  background: #fff;
+  box-shadow: 0 -2px 2px #f0f0f0;
 }
-.order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] .card-header[_ngcontent-c8] {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    line-height: 40px;
-    box-sizing: border-box;
+.order-wrapper[_ngcontent-c8]
+  .order-card[_ngcontent-c8]
+  .card-header[_ngcontent-c8] {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  line-height: 40px;
+  box-sizing: border-box;
 }
-.order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] h2.title[_ngcontent-c8] {
-    float: left;
-    height: 40px;
-    padding-left: 10px;
-    color: #666;
-    font-size: .75rem;
-    font-weight: 700;
+.order-wrapper[_ngcontent-c8]
+  .order-card[_ngcontent-c8]
+  h2.title[_ngcontent-c8] {
+  float: left;
+  height: 40px;
+  padding-left: 10px;
+  color: #666;
+  font-size: 0.75rem;
+  font-weight: 700;
 }
-h2[_ngcontent-c8], h3[_ngcontent-c8] {
-    font-weight: 400;
+h2[_ngcontent-c8],
+h3[_ngcontent-c8] {
+  font-weight: 400;
 }
-.order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] .card-header[_ngcontent-c8]::after {
-    content: "";
-    width: 100%;
-    height: 1px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #f2f2f2;
-    -webkit-transform: scaleY(.667);
-    transform: scaleY(.667);
-    -webkit-transform-origin: bottom;
-    transform-origin: bottom;
+.order-wrapper[_ngcontent-c8]
+  .order-card[_ngcontent-c8]
+  .card-header[_ngcontent-c8]::after {
+  content: "";
+  width: 100%;
+  height: 1px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f2f2f2;
+  -webkit-transform: scaleY(0.667);
+  transform: scaleY(0.667);
+  -webkit-transform-origin: bottom;
+  transform-origin: bottom;
 }
-.order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] .content[_ngcontent-c8]:last-child {
-    border-bottom: 0;
+.order-wrapper[_ngcontent-c8]
+  .order-card[_ngcontent-c8]
+  .content[_ngcontent-c8]:last-child {
+  border-bottom: 0;
 }
-.order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] .content[_ngcontent-c8] {
-    padding: 12px 18px;
-    border-bottom: 1px solid #f0f0f0;
+.order-wrapper[_ngcontent-c8]
+  .order-card[_ngcontent-c8]
+  .content[_ngcontent-c8] {
+  padding: 12px 18px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.order-wrapper[_ngcontent-c8] .order-address[_ngcontent-c8] .content[_ngcontent-c8] {
-    position: relative;
+.order-wrapper[_ngcontent-c8]
+  .order-address[_ngcontent-c8]
+  .content[_ngcontent-c8] {
+  position: relative;
 }
-.order-wrapper[_ngcontent-c8] .order-address[_ngcontent-c8] .content[_ngcontent-c8]::before {
-    content: "";
-    display: block;
-    position: absolute;
-    right: .6rem;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    width: .3rem;
-    height: .5rem;
-    background: url('../assets/images/arrow12.png') no-repeat 50%;
-    background-size: contain;
+.order-wrapper[_ngcontent-c8]
+  .order-address[_ngcontent-c8]
+  .content[_ngcontent-c8]::before {
+  content: "";
+  display: block;
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  width: 0.3rem;
+  height: 0.5rem;
+  background: url("../assets/images/arrow12.png") no-repeat 50%;
+  background-size: contain;
 }
-.order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] .content[_ngcontent-c8] .name[_ngcontent-c8] {
-    font-size: .95rem;
-    color: #333;
-    margin-bottom: 12px;
-    font-weight: 700;
+.order-wrapper[_ngcontent-c8]
+  .order-card[_ngcontent-c8]
+  .content[_ngcontent-c8]
+  .name[_ngcontent-c8] {
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 12px;
+  font-weight: 700;
 }
-.order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] .content[_ngcontent-c8] .address[_ngcontent-c8] {
-    font-size: .6rem;
-    color: #7f7f7f;
-    line-height: .9rem;
-    margin-right: .3rem;
+.order-wrapper[_ngcontent-c8]
+  .order-card[_ngcontent-c8]
+  .content[_ngcontent-c8]
+  .address[_ngcontent-c8] {
+  font-size: 0.6rem;
+  color: #7f7f7f;
+  line-height: 0.9rem;
+  margin-right: 0.3rem;
 }
-h2[_ngcontent-c8], h3[_ngcontent-c8] {
-    font-weight: 400;
+h2[_ngcontent-c8],
+h3[_ngcontent-c8] {
+  font-weight: 400;
 }
 .order-payment[_ngcontent-c9] {
-    margin-top: 5px;
+  margin-top: 5px;
 }
 .order-card[_ngcontent-c9] {
-    background: #fff;
-    border-bottom: 1px solid #d1d1d1;
+  background: #fff;
+  border-bottom: 1px solid #d1d1d1;
 }
 .order-card[_ngcontent-c9] .card-header[_ngcontent-c9] {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    line-height: 40px;
-    box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  line-height: 40px;
+  box-sizing: border-box;
 }
 .order-card[_ngcontent-c9] h2.title[_ngcontent-c9] {
-    float: left;
-    height: 40px;
-    padding-left: 10px;
-    color: #666;
-    font-size: .75rem;
+  float: left;
+  height: 40px;
+  padding-left: 10px;
+  color: #666;
+  font-size: 0.75rem;
 }
 .order-card[_ngcontent-c9] .card-header[_ngcontent-c9]::after {
-    content: "";
-    width: 100%;
-    height: 1px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #f2f2f2;
-    -webkit-transform: scaleY(.667);
-    transform: scaleY(.667);
-    -webkit-transform-origin: bottom;
-    transform-origin: bottom;
+  content: "";
+  width: 100%;
+  height: 1px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f2f2f2;
+  -webkit-transform: scaleY(0.667);
+  transform: scaleY(0.667);
+  -webkit-transform-origin: bottom;
+  transform-origin: bottom;
 }
-.order-payment[_ngcontent-c9] .payment-items[_ngcontent-c9] .item.active[_ngcontent-c9] {
-    font-weight: 700;
+.order-payment[_ngcontent-c9]
+  .payment-items[_ngcontent-c9]
+  .item.active[_ngcontent-c9] {
+  font-weight: 700;
 }
-.order-payment[_ngcontent-c9] .payment-items[_ngcontent-c9] .item[_ngcontent-c9] {
-    position: relative;
-    height: 48px;
-    line-height: 48px;
-    font-size: .95rem;
-    color: #333;
-    padding-left: 20px;
+.order-payment[_ngcontent-c9]
+  .payment-items[_ngcontent-c9]
+  .item[_ngcontent-c9] {
+  position: relative;
+  height: 48px;
+  line-height: 48px;
+  font-size: 0.95rem;
+  color: #333;
+  padding-left: 20px;
 }
-.order-payment[_ngcontent-c9] .payment-items[_ngcontent-c9] .item[_ngcontent-c9]::before {
-    position: absolute;
-    content: "";
-    display: block;
-    background: url('../assets/images/gou.png') no-repeat 50%;
-    width: 24px;
-    height: 24px;
-    background-size: 24px auto;
-    background-position: 0 0;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
+.order-payment[_ngcontent-c9]
+  .payment-items[_ngcontent-c9]
+  .item[_ngcontent-c9]::before {
+  position: absolute;
+  content: "";
+  display: block;
+  background: url("../assets/images/gou.png") no-repeat 50%;
+  width: 24px;
+  height: 24px;
+  background-size: 24px auto;
+  background-position: 0 0;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
 }
-.order-payment[_ngcontent-c9] .payment-items[_ngcontent-c9] .item[_ngcontent-c9] .name[_ngcontent-c9] {
-    margin-left: 40px;
+.order-payment[_ngcontent-c9]
+  .payment-items[_ngcontent-c9]
+  .item[_ngcontent-c9]
+  .name[_ngcontent-c9] {
+  margin-left: 40px;
 }
-.order-payment[_ngcontent-c9] .payment-items[_ngcontent-c9] .item[_ngcontent-c9] .payment-check.active[_ngcontent-c9]::after {
-    position: absolute;
-    content: "";
-    background: url('../assets/images/gou.png') no-repeat 50%;
-    width: .75rem;
-    height: .6rem;
-    background-size: 1.2rem;
-    background-position: 0 100%;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    top: 50%;
-    right: 1.15rem;
+.order-payment[_ngcontent-c9]
+  .payment-items[_ngcontent-c9]
+  .item[_ngcontent-c9]
+  .payment-check.active[_ngcontent-c9]::after {
+  position: absolute;
+  content: "";
+  background: url("../assets/images/gou.png") no-repeat 50%;
+  width: 0.75rem;
+  height: 0.6rem;
+  background-size: 1.2rem;
+  background-position: 0 100%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  top: 50%;
+  right: 1.15rem;
 }
-.order-payment[_ngcontent-c9] .payment-items[_ngcontent-c9] .item[_ngcontent-c9]::after {
-    content: "";
-    width: 100%;
-    height: 1px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #f2f2f2;
-    -webkit-transform: scaleY(.667);
-    transform: scaleY(.667);
-    -webkit-transform-origin: bottom;
-    transform-origin: bottom;
+.order-payment[_ngcontent-c9]
+  .payment-items[_ngcontent-c9]
+  .item[_ngcontent-c9]::after {
+  content: "";
+  width: 100%;
+  height: 1px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f2f2f2;
+  -webkit-transform: scaleY(0.667);
+  transform: scaleY(0.667);
+  -webkit-transform-origin: bottom;
+  transform-origin: bottom;
 }
-.order-payment[_ngcontent-c9] .payment-items[_ngcontent-c9] .item.ali-pay[_ngcontent-c9]::before {
-    background-position: 0 -24px;
+.order-payment[_ngcontent-c9]
+  .payment-items[_ngcontent-c9]
+  .item.ali-pay[_ngcontent-c9]::before {
+  background-position: 0 -24px;
 }
-.order-payment[_ngcontent-c9] .payment-items[_ngcontent-c9] .item.stages-pay.ant[_ngcontent-c9]::before {
-    background-position: 0 -72px;
+.order-payment[_ngcontent-c9]
+  .payment-items[_ngcontent-c9]
+  .item.stages-pay.ant[_ngcontent-c9]::before {
+  background-position: 0 -72px;
 }
-.order-payment[_ngcontent-c9] .payment-items[_ngcontent-c9] .item.stages-pay[_ngcontent-c9] .stages[_ngcontent-c9] {
-    position: relative;
-    display: inline-block;
-    margin-left: 40px;
-    padding: .6rem .8rem .6rem 0;
-    line-height: 1;
-    font-size: .6rem;
-    color: #666;
-    border-top: 1px dotted #ebebeb;
+.order-payment[_ngcontent-c9]
+  .payment-items[_ngcontent-c9]
+  .item.stages-pay[_ngcontent-c9]
+  .stages[_ngcontent-c9] {
+  position: relative;
+  display: inline-block;
+  margin-left: 40px;
+  padding: 0.6rem 0.8rem 0.6rem 0;
+  line-height: 1;
+  font-size: 0.6rem;
+  color: #666;
+  border-top: 1px dotted #ebebeb;
 }
-.order-payment[_ngcontent-c9] .payment-items[_ngcontent-c9] .item.stages-pay[_ngcontent-c9] .stages[_ngcontent-c9] span[_ngcontent-c9] {
-    font-weight: 700;
+.order-payment[_ngcontent-c9]
+  .payment-items[_ngcontent-c9]
+  .item.stages-pay[_ngcontent-c9]
+  .stages[_ngcontent-c9]
+  span[_ngcontent-c9] {
+  font-weight: 700;
 }
-.order-payment[_ngcontent-c9] .payment-items[_ngcontent-c9] .item.stages-pay[_ngcontent-c9] .stages[_ngcontent-c9] em[_ngcontent-c9] i, .order-payment[_ngcontent-c9] .payment-items[_ngcontent-c9] .item.stages-pay[_ngcontent-c9] .stages[_ngcontent-c9] em[_ngcontent-c9] span {
-    font-style: normal;
+.order-payment[_ngcontent-c9]
+  .payment-items[_ngcontent-c9]
+  .item.stages-pay[_ngcontent-c9]
+  .stages[_ngcontent-c9]
+  em[_ngcontent-c9]
+  i,
+.order-payment[_ngcontent-c9]
+  .payment-items[_ngcontent-c9]
+  .item.stages-pay[_ngcontent-c9]
+  .stages[_ngcontent-c9]
+  em[_ngcontent-c9]
+  span {
+  font-style: normal;
 }
-.order-payment[_ngcontent-c9] .payment-items[_ngcontent-c9] .item.stages-pay[_ngcontent-c9] .stages[_ngcontent-c9]:after {
-    content: "";
-    display: block;
-    position: absolute;
-    right: 0;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    width: .3rem;
-    height: 1rem;
-    background: url('../assets/images/arrow12.png') no-repeat 50%;
-    background-size: contain;
+.order-payment[_ngcontent-c9]
+  .payment-items[_ngcontent-c9]
+  .item.stages-pay[_ngcontent-c9]
+  .stages[_ngcontent-c9]:after {
+  content: "";
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  width: 0.3rem;
+  height: 1rem;
+  background: url("../assets/images/arrow12.png") no-repeat 50%;
+  background-size: contain;
 }
 .order-payment[_ngcontent-c9] .notes[_ngcontent-c9] {
-    width: 100%;
-    padding: .8rem .9rem;
-    box-sizing: border-box;
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  box-sizing: border-box;
 }
-.min-font-12px[_nghost-c9] .order-payment[_ngcontent-c9] .notes[_ngcontent-c9] li[_ngcontent-c9], .min-font-12px [_nghost-c9] .order-payment[_ngcontent-c9] .notes[_ngcontent-c9] li[_ngcontent-c9] {
-    -webkit-transform: scale(10/12);
-    transform: scale(10/12);
-    -webkit-transform-origin: 0 0;
-    transform-origin: 0 0;
+.min-font-12px[_nghost-c9]
+  .order-payment[_ngcontent-c9]
+  .notes[_ngcontent-c9]
+  li[_ngcontent-c9],
+.min-font-12px
+  [_nghost-c9]
+  .order-payment[_ngcontent-c9]
+  .notes[_ngcontent-c9]
+  li[_ngcontent-c9] {
+  -webkit-transform: scale(10/12);
+  transform: scale(10/12);
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
 }
-.order-payment[_ngcontent-c9] .notes[_ngcontent-c9] li.note-title[_ngcontent-c9] {
-    color: #666;
+.order-payment[_ngcontent-c9]
+  .notes[_ngcontent-c9]
+  li.note-title[_ngcontent-c9] {
+  color: #666;
 }
 .order-payment[_ngcontent-c9] .notes[_ngcontent-c9] li[_ngcontent-c9] {
-    font-size: .5rem;
-    line-height: 1rem;
-    color: #7f7f7f;
+  font-size: 0.5rem;
+  line-height: 1rem;
+  color: #7f7f7f;
 }
-.order-payment[_ngcontent-c9] .notes[_ngcontent-c9] li[_ngcontent-c9] + li[_ngcontent-c9] {
-    margin-top: 6px;
+.order-payment[_ngcontent-c9]
+  .notes[_ngcontent-c9]
+  li[_ngcontent-c9]
+  + li[_ngcontent-c9] {
+  margin-top: 6px;
 }
 .order-payment[_ngcontent-c9] .notes[_ngcontent-c9] li.note-tip[_ngcontent-c9] {
-    position: relative;
-    padding-left: 8px;
-
+  position: relative;
+  padding-left: 8px;
 }
 .order-payment[_ngcontent-c9] .notes[_ngcontent-c9] li[_ngcontent-c9] {
-    font-size: .5rem;
-    line-height: 1rem;
-    color: #7f7f7f;
+  font-size: 0.5rem;
+  line-height: 1rem;
+  color: #7f7f7f;
 }
-.order-payment[_ngcontent-c9] .notes[_ngcontent-c9] li.note-tip[_ngcontent-c9]::before {
-    position: absolute;
-    content: "";
-    left: 2px;
-    top: 9px;
-    width: 2px;
-    height: 2px;
-    border-radius: 50%;
-    background-color: #7f7f7f;
+.order-payment[_ngcontent-c9]
+  .notes[_ngcontent-c9]
+  li.note-tip[_ngcontent-c9]::before {
+  position: absolute;
+  content: "";
+  left: 2px;
+  top: 9px;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background-color: #7f7f7f;
 }
 .order-wrapper[_ngcontent-c8] .order-goods[_ngcontent-c8] {
-    margin-top: 5px;
+  margin-top: 5px;
 }
 
 .order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] {
-    background: #fff;
-    border-bottom: 1px solid #d1d1d1;
-    border-top: 1px solid #d1d1d1;
+  background: #fff;
+  border-bottom: 1px solid #d1d1d1;
+  border-top: 1px solid #d1d1d1;
 }
-.order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] .card-header[_ngcontent-c8] {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    line-height: 40px;
-    box-sizing: border-box;
+.order-wrapper[_ngcontent-c8]
+  .order-card[_ngcontent-c8]
+  .card-header[_ngcontent-c8] {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  line-height: 40px;
+  box-sizing: border-box;
 }
-.order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] h2.title[_ngcontent-c8] {
-    float: left;
-    height: 40px;
-    padding-left: 10px;
-    color: #666;
-    font-size: .95rem;
-    font-weight: 700;
+.order-wrapper[_ngcontent-c8]
+  .order-card[_ngcontent-c8]
+  h2.title[_ngcontent-c8] {
+  float: left;
+  height: 40px;
+  padding-left: 10px;
+  color: #666;
+  font-size: 0.95rem;
+  font-weight: 700;
 }
-.order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] h3.sub-title[_ngcontent-c8] {
-    float: right;
-    margin-right: 10px;
-    font-size: .9rem;
-    color: #7f7f7f;
-    padding-right: 7px;
+.order-wrapper[_ngcontent-c8]
+  .order-card[_ngcontent-c8]
+  h3.sub-title[_ngcontent-c8] {
+  float: right;
+  margin-right: 10px;
+  font-size: 0.9rem;
+  color: #7f7f7f;
+  padding-right: 7px;
 }
-h2[_ngcontent-c8], h3[_ngcontent-c8] {
-    font-weight: 400;
+h2[_ngcontent-c8],
+h3[_ngcontent-c8] {
+  font-weight: 400;
 }
-.order-wrapper[_ngcontent-c8] .order-goods[_ngcontent-c8] .content[_ngcontent-c8] {
-    display: flex;
-    align-items: center;
+.order-wrapper[_ngcontent-c8]
+  .order-goods[_ngcontent-c8]
+  .content[_ngcontent-c8] {
+  display: flex;
+  align-items: center;
 }
-.order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] .content[_ngcontent-c8] {
-    padding: 12px 18px;
-    border-bottom: 1px solid #f0f0f0;
+.order-wrapper[_ngcontent-c8]
+  .order-card[_ngcontent-c8]
+  .content[_ngcontent-c8] {
+  padding: 12px 18px;
+  border-bottom: 1px solid #f0f0f0;
 }
-.order-wrapper[_ngcontent-c8] .order-goods[_ngcontent-c8] .goods-img[_ngcontent-c8] {
-    float: left;
-    margin-right: 18px;
+.order-wrapper[_ngcontent-c8]
+  .order-goods[_ngcontent-c8]
+  .goods-img[_ngcontent-c8] {
+  float: left;
+  margin-right: 18px;
 }
-.order-wrapper[_ngcontent-c8] .order-goods[_ngcontent-c8] .goods-img[_ngcontent-c8] img[_ngcontent-c8] {
-    width: 83px;
-    height: 83px;
+.order-wrapper[_ngcontent-c8]
+  .order-goods[_ngcontent-c8]
+  .goods-img[_ngcontent-c8]
+  img[_ngcontent-c8] {
+  width: 83px;
+  height: 83px;
 }
-.order-wrapper[_ngcontent-c8] .order-goods[_ngcontent-c8] .goods-info[_ngcontent-c8] {
-    overflow: hidden;
-    font-size: .9rem;
+.order-wrapper[_ngcontent-c8]
+  .order-goods[_ngcontent-c8]
+  .goods-info[_ngcontent-c8] {
+  overflow: hidden;
+  font-size: 0.9rem;
 }
-.order-wrapper[_ngcontent-c8] .order-goods[_ngcontent-c8] .goods-info[_ngcontent-c8] .title[_ngcontent-c8] {
-    color: #333;
-    font-weight: 700;
-    line-height: .9rem;
-    margin-bottom: .4rem;
+.order-wrapper[_ngcontent-c8]
+  .order-goods[_ngcontent-c8]
+  .goods-info[_ngcontent-c8]
+  .title[_ngcontent-c8] {
+  color: #333;
+  font-weight: 700;
+  line-height: 0.9rem;
+  margin-bottom: 0.4rem;
 }
-.order-wrapper[_ngcontent-c8] .order-goods[_ngcontent-c8] .goods-info[_ngcontent-c8] .desc[_ngcontent-c8] {
-    font-size: .6rem;
-    line-height: .8rem;
-    color: #7f7f7f;
+.order-wrapper[_ngcontent-c8]
+  .order-goods[_ngcontent-c8]
+  .goods-info[_ngcontent-c8]
+  .desc[_ngcontent-c8] {
+  font-size: 0.6rem;
+  line-height: 0.8rem;
+  color: #7f7f7f;
 }
-.order-wrapper[_ngcontent-c8] .order-goods[_ngcontent-c8] .goods-info[_ngcontent-c8] .summary[_ngcontent-c8] {
-    margin-top: 8px;
-    font-weight: 700;
-    font-size: 0;
+.order-wrapper[_ngcontent-c8]
+  .order-goods[_ngcontent-c8]
+  .goods-info[_ngcontent-c8]
+  .summary[_ngcontent-c8] {
+  margin-top: 8px;
+  font-weight: 700;
+  font-size: 0;
 }
-.order-wrapper[_ngcontent-c8] .order-goods[_ngcontent-c8] .goods-info[_ngcontent-c8] .summary[_ngcontent-c8] .price[_ngcontent-c8] {
-    display: inline-block;
-    font-size: .75rem;
-    color: #d44e43;
+.order-wrapper[_ngcontent-c8]
+  .order-goods[_ngcontent-c8]
+  .goods-info[_ngcontent-c8]
+  .summary[_ngcontent-c8]
+  .price[_ngcontent-c8] {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: #d44e43;
 }
-.order-wrapper[_ngcontent-c8] .order-goods[_ngcontent-c8] .goods-info[_ngcontent-c8] .summary[_ngcontent-c8] .price[_ngcontent-c8] i {
-    font-style: normal;
-    font-size: .5rem;
+.order-wrapper[_ngcontent-c8]
+  .order-goods[_ngcontent-c8]
+  .goods-info[_ngcontent-c8]
+  .summary[_ngcontent-c8]
+  .price[_ngcontent-c8]
+  i {
+  font-style: normal;
+  font-size: 0.5rem;
 }
-.order-wrapper[_ngcontent-c8] .order-goods[_ngcontent-c8] .goods-info[_ngcontent-c8] .summary[_ngcontent-c8] .num[_ngcontent-c8] {
-    display: inline-block;
-    font-size: .6rem;
-    margin-left: .8rem;
-    position: relative;
-    color: #999;
+.order-wrapper[_ngcontent-c8]
+  .order-goods[_ngcontent-c8]
+  .goods-info[_ngcontent-c8]
+  .summary[_ngcontent-c8]
+  .num[_ngcontent-c8] {
+  display: inline-block;
+  font-size: 0.6rem;
+  margin-left: 0.8rem;
+  position: relative;
+  color: #999;
 }
-.order-wrapper[_ngcontent-c8] .order-goods[_ngcontent-c8] .goods-info[_ngcontent-c8] .summary[_ngcontent-c8] .num[_ngcontent-c8]::before {
-    position: absolute;
-    content: "x";
-    left: -12px;
-    font-size: .6rem;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
+.order-wrapper[_ngcontent-c8]
+  .order-goods[_ngcontent-c8]
+  .goods-info[_ngcontent-c8]
+  .summary[_ngcontent-c8]
+  .num[_ngcontent-c8]::before {
+  position: absolute;
+  content: "x";
+  left: -12px;
+  font-size: 0.6rem;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
 }
-.order-wrapper[_ngcontent-c8] .order-goods[_ngcontent-c8] .goods-info[_ngcontent-c8] .summary[_ngcontent-c8] .sale-price[_ngcontent-c8] {
-    position: relative;
-    margin-left: 12px;
-    color: #999;
+.order-wrapper[_ngcontent-c8]
+  .order-goods[_ngcontent-c8]
+  .goods-info[_ngcontent-c8]
+  .summary[_ngcontent-c8]
+  .sale-price[_ngcontent-c8] {
+  position: relative;
+  margin-left: 12px;
+  color: #999;
 }
 .order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] {
-    position: relative;
-    margin-top: 5px;
-    background: #fff;
+  position: relative;
+  margin-top: 5px;
+  background: #fff;
 }
-.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .option-item[_ngcontent-c8] {
-    position: relative;
-    height: 3rem;
-    line-height: 3rem;
-    font-size: .7rem;
-    padding-left: 18px;
-    color: #333;
-    box-sizing: border-box;
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .option-item[_ngcontent-c8] {
+  position: relative;
+  height: 3rem;
+  line-height: 3rem;
+  font-size: 0.7rem;
+  padding-left: 18px;
+  color: #333;
+  box-sizing: border-box;
 }
-.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .option-item[_ngcontent-c8]:before {
-    content: "";
-    display: block;
-    position: absolute;
-    right: .6rem;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    width: .3rem;
-    height: .5rem;
-    background: url('../assets/images/arrow12.png') no-repeat 50%;
-    background-size: contain;
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .option-item[_ngcontent-c8]:before {
+  content: "";
+  display: block;
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  width: 0.3rem;
+  height: 0.5rem;
+  background: url("../assets/images/arrow12.png") no-repeat 50%;
+  background-size: contain;
 }
-.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .name[_ngcontent-c8] {
-    font-size: .85rem;
-    font-weight: 700;
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .name[_ngcontent-c8] {
+  font-size: 0.85rem;
+  font-weight: 700;
 }
-.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .invoice[_ngcontent-c8], .order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .name[_ngcontent-c8] {
-    float: left;
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .invoice[_ngcontent-c8],
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .name[_ngcontent-c8] {
+  float: left;
 }
-.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .invoice[_ngcontent-c8] {
-    font-size: 0;
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .invoice[_ngcontent-c8] {
+  font-size: 0;
 }
-.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .coupon[_ngcontent-c8], .order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .invoice[_ngcontent-c8] {
-    width: 12rem;
-    height: 3rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: right;
-    white-space: nowrap;
-    padding-left: .5rem;
-    color: #999;
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .coupon[_ngcontent-c8],
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .invoice[_ngcontent-c8] {
+  width: 12rem;
+  height: 3rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+  white-space: nowrap;
+  padding-left: 0.5rem;
+  color: #999;
 }
 
-.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .invoice[_ngcontent-c8], .order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .name[_ngcontent-c8] {
-    float: left;
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .invoice[_ngcontent-c8],
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .name[_ngcontent-c8] {
+  float: left;
 }
-.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .invoice[_ngcontent-c8] li[_ngcontent-c8] {
-    display: inline-block;
-    font-size: .7rem;
-    position: relative;
-    margin-right: .9rem;
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .invoice[_ngcontent-c8]
+  li[_ngcontent-c8] {
+  display: inline-block;
+  font-size: 0.7rem;
+  position: relative;
+  margin-right: 0.9rem;
 }
-.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .invoice[_ngcontent-c8] li[_ngcontent-c8]::after {
-    position: absolute;
-    content: "\B7";
-    right: -.5rem;
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .invoice[_ngcontent-c8]
+  li[_ngcontent-c8]::after {
+  position: absolute;
+  content: "\B7";
+  right: -0.5rem;
 }
-.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .invoice[_ngcontent-c8] li[_ngcontent-c8]:last-child {
-    margin-right: 0;
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .invoice[_ngcontent-c8]
+  li[_ngcontent-c8]:last-child {
+  margin-right: 0;
 }
-.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .option-item[_ngcontent-c8]:first-child::after, .order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .option-item[_ngcontent-c8]:nth-last-child(2)::after {
-    content: "";
-    width: 100%;
-    height: 1px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #f2f2f2;
-    -webkit-transform: scaleY(.667);
-    transform: scaleY(.667);
-    -webkit-transform-origin: bottom;
-    transform-origin: bottom;
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .option-item[_ngcontent-c8]:first-child::after,
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .option-item[_ngcontent-c8]:nth-last-child(2)::after {
+  content: "";
+  width: 100%;
+  height: 1px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f2f2f2;
+  -webkit-transform: scaleY(0.667);
+  transform: scaleY(0.667);
+  -webkit-transform-origin: bottom;
+  transform-origin: bottom;
 }
-.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .coupon[_ngcontent-c8], .order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .invoice[_ngcontent-c8] {
-    width: 12rem;
-    height: 3rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: right;
-    white-space: nowrap;
-    padding-left: .5rem;
-    color: #999;
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .coupon[_ngcontent-c8],
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .invoice[_ngcontent-c8] {
+  width: 12rem;
+  height: 3rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+  white-space: nowrap;
+  padding-left: 0.5rem;
+  color: #999;
 }
-.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .coupon[_ngcontent-c8],.order-wrapper[_ngcontent-c8] .order-options[_ngcontent-c8] .invoice[_ngcontent-c8]{
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .coupon[_ngcontent-c8],
+.order-wrapper[_ngcontent-c8]
+  .order-options[_ngcontent-c8]
+  .invoice[_ngcontent-c8] {
   margin-right: 1.2rem;
   float: right;
 }
 .order-wrapper[_ngcontent-c8] .order-subtotal[_ngcontent-c8] {
-    margin-top: 5px;
+  margin-top: 5px;
 }
 .order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] {
-    background: #fff;
-    border-bottom: 1px solid #d1d1d1;
-    border-top: 1px solid #d1d1d1;
+  background: #fff;
+  border-bottom: 1px solid #d1d1d1;
+  border-top: 1px solid #d1d1d1;
 }
-.order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] .card-header[_ngcontent-c8] {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    line-height: 40px;
-    box-sizing: border-box;
+.order-wrapper[_ngcontent-c8]
+  .order-card[_ngcontent-c8]
+  .card-header[_ngcontent-c8] {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  line-height: 40px;
+  box-sizing: border-box;
 }
-.order-wrapper[_ngcontent-c8] .order-subtotal[_ngcontent-c8] .item[_ngcontent-c8] {
-    font-size: .95rem;
-    margin-left: 13px;
-    padding-right: 13px;
-    height: 2.4rem;
-    line-height: 2.4rem;
-    color: #333;
-    position: relative;
+.order-wrapper[_ngcontent-c8]
+  .order-subtotal[_ngcontent-c8]
+  .item[_ngcontent-c8] {
+  font-size: 0.95rem;
+  margin-left: 13px;
+  padding-right: 13px;
+  height: 2.4rem;
+  line-height: 2.4rem;
+  color: #333;
+  position: relative;
 }
-.order-wrapper[_ngcontent-c8] .order-subtotal[_ngcontent-c8] .item[_ngcontent-c8] .name[_ngcontent-c8] {
-    float: left;
+.order-wrapper[_ngcontent-c8]
+  .order-subtotal[_ngcontent-c8]
+  .item[_ngcontent-c8]
+  .name[_ngcontent-c8] {
+  float: left;
 }
-.order-wrapper[_ngcontent-c8] .order-subtotal[_ngcontent-c8] .item[_ngcontent-c8] .price[_ngcontent-c8] {
-    position: absolute;
-    right: 13px;
-    font-weight: 700;
+.order-wrapper[_ngcontent-c8]
+  .order-subtotal[_ngcontent-c8]
+  .item[_ngcontent-c8]
+  .price[_ngcontent-c8] {
+  position: absolute;
+  right: 13px;
+  font-weight: 700;
 }
-.order-wrapper[_ngcontent-c8] .order-subtotal[_ngcontent-c8] .item[_ngcontent-c8] .price.price-plus[_ngcontent-c8]::before {
-    position: absolute;
-    content: "+";
-    left: -12px;
-    bottom: 0;
-    font-size: .6rem;
+.order-wrapper[_ngcontent-c8]
+  .order-subtotal[_ngcontent-c8]
+  .item[_ngcontent-c8]
+  .price.price-plus[_ngcontent-c8]::before {
+  position: absolute;
+  content: "+";
+  left: -12px;
+  bottom: 0;
+  font-size: 0.6rem;
 }
-.order-wrapper[_ngcontent-c8] .order-subtotal[_ngcontent-c8] .item[_ngcontent-c8] .price.price-minus[_ngcontent-c8]::before {
-    position: absolute;
-    content: "-";
-    left: -12px;
-    bottom: 0;
-    font-size: .6rem;
+.order-wrapper[_ngcontent-c8]
+  .order-subtotal[_ngcontent-c8]
+  .item[_ngcontent-c8]
+  .price.price-minus[_ngcontent-c8]::before {
+  position: absolute;
+  content: "-";
+  left: -12px;
+  bottom: 0;
+  font-size: 0.6rem;
 }
-.order-wrapper[_ngcontent-c8] .order-subtotal[_ngcontent-c8] .item[_ngcontent-c8] .price[_ngcontent-c8] i {
-    font-size: .6rem;
-    font-style: normal;
+.order-wrapper[_ngcontent-c8]
+  .order-subtotal[_ngcontent-c8]
+  .item[_ngcontent-c8]
+  .price[_ngcontent-c8]
+  i {
+  font-size: 0.6rem;
+  font-style: normal;
 }
-.order-wrapper[_ngcontent-c8] .order-subtotal[_ngcontent-c8] .item[_ngcontent-c8]::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 300%;
-    height: 2px;
-    background-image: linear-gradient(90deg,#e4e4e4 50%,hsla(0,0%,100%,0) 0);
-    background-position: bottom;
-    background-size: 4px 2px;
-    background-repeat: repeat-x;
-    -webkit-transform-origin: 0 0;
-    transform-origin: 0 0;
-    -webkit-transform: scale(.33333);
-    transform: scale(.33333);
+.order-wrapper[_ngcontent-c8]
+  .order-subtotal[_ngcontent-c8]
+  .item[_ngcontent-c8]::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 300%;
+  height: 2px;
+  background-image: linear-gradient(90deg, #e4e4e4 50%, hsla(0, 0%, 100%, 0) 0);
+  background-position: bottom;
+  background-size: 4px 2px;
+  background-repeat: repeat-x;
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+  -webkit-transform: scale(0.33333);
+  transform: scale(0.33333);
 }
-.order-wrapper[_ngcontent-c8] .order-subtotal[_ngcontent-c8] .items-subtotal[_ngcontent-c8] {
-    position: relative;
-    margin-left: 0;
-    padding-left: 13px;
-    font-weight: 700;
-    border-bottom: none;
+.order-wrapper[_ngcontent-c8]
+  .order-subtotal[_ngcontent-c8]
+  .items-subtotal[_ngcontent-c8] {
+  position: relative;
+  margin-left: 0;
+  padding-left: 13px;
+  font-weight: 700;
+  border-bottom: none;
 }
-.order-wrapper[_ngcontent-c8] .order-subtotal[_ngcontent-c8] .items-subtotal[_ngcontent-c8] .price[_ngcontent-c8] {
-    color: #d44d44;
+.order-wrapper[_ngcontent-c8]
+  .order-subtotal[_ngcontent-c8]
+  .items-subtotal[_ngcontent-c8]
+  .price[_ngcontent-c8] {
+  color: #d44d44;
 }
-.order-wrapper[_ngcontent-c8] .order-subtotal[_ngcontent-c8] .items-subtotal[_ngcontent-c8]::after {
-    height: 0;
+.order-wrapper[_ngcontent-c8]
+  .order-subtotal[_ngcontent-c8]
+  .items-subtotal[_ngcontent-c8]::after {
+  height: 0;
 }
 .order-wrapper[_ngcontent-c8] .occupy-a-seat[_ngcontent-c8] {
-    margin-top: 2.8rem;
+  margin-top: 2.8rem;
 }
 .order-wrapper[_ngcontent-c8] .order-card[_ngcontent-c8] {
-    background: #fff;
-    border-bottom: 1px solid #d1d1d1;
-    border-top: 1px solid #d1d1d1;
+  background: #fff;
+  border-bottom: 1px solid #d1d1d1;
+  border-top: 1px solid #d1d1d1;
 }
 .order-wrapper[_ngcontent-c8] .order-btns[_ngcontent-c8] {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 2.62rem;
-    box-sizing: border-box;
-    padding: 7px 6px 7px 18px;
-    background: #fff;
-    border-top: 1px solid rgba(0,0,0,.1);
-    box-shadow: 0 0.2rem 1rem rgba(0,0,0,.1);
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 2.62rem;
+  box-sizing: border-box;
+  padding: 7px 6px 7px 18px;
+  background: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.1);
 }
-.order-wrapper[_ngcontent-c8] .order-btns[_ngcontent-c8] .total-content[_ngcontent-c8] {
-    position: absolute;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    font-weight: 700;
+.order-wrapper[_ngcontent-c8]
+  .order-btns[_ngcontent-c8]
+  .total-content[_ngcontent-c8] {
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  font-weight: 700;
 }
-.order-wrapper[_ngcontent-c8] .order-btns[_ngcontent-c8] .total-name[_ngcontent-c8] {
-    margin-right: 5px;
-    font-size: .9rem;
-    color: #333;
+.order-wrapper[_ngcontent-c8]
+  .order-btns[_ngcontent-c8]
+  .total-name[_ngcontent-c8] {
+  margin-right: 5px;
+  font-size: 0.9rem;
+  color: #333;
 }
-.order-wrapper[_ngcontent-c8] .order-btns[_ngcontent-c8] .total-price[_ngcontent-c8] {
-    font-size: .95rem;
-    color: #c4564b;
+.order-wrapper[_ngcontent-c8]
+  .order-btns[_ngcontent-c8]
+  .total-price[_ngcontent-c8] {
+  font-size: 0.95rem;
+  color: #c4564b;
 }
-.order-wrapper[_ngcontent-c8] .order-btns[_ngcontent-c8] .total-price[_ngcontent-c8] >i {
-    font-size: .6rem;
-    font-style: normal;
+.order-wrapper[_ngcontent-c8]
+  .order-btns[_ngcontent-c8]
+  .total-price[_ngcontent-c8]
+  > i {
+  font-size: 0.6rem;
+  font-style: normal;
 }
-.order-wrapper[_ngcontent-c8] .order-btns[_ngcontent-c8] .payment-btn[_ngcontent-c8] {
-    float: right;
-    width: 8.33rem;
-    height: 2rem;
-    font-size: .75rem;
-    font-weight: 700;
-    border: 0;
-    outline: none;
-    border-radius: 6px;
-    color: #fff;
-    background: #5f7ed7;
-    background: linear-gradient(#6e98f4,#4b77ee);
-    box-shadow: inset 0 1px 2px 0 rgba(61,102,228,.3), 0 2px 3px -1px rgba(0,0,0,.3);
-    -webkit-user-select: none;
-    user-select: none;
+.order-wrapper[_ngcontent-c8]
+  .order-btns[_ngcontent-c8]
+  .payment-btn[_ngcontent-c8] {
+  float: right;
+  width: 8.33rem;
+  height: 2rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 0;
+  outline: none;
+  border-radius: 6px;
+  color: #fff;
+  background: #5f7ed7;
+  background: linear-gradient(#6e98f4, #4b77ee);
+  box-shadow: inset 0 1px 2px 0 rgba(61, 102, 228, 0.3),
+    0 2px 3px -1px rgba(0, 0, 0, 0.3);
+  -webkit-user-select: none;
+  user-select: none;
 }
 </style>

@@ -16,7 +16,8 @@ import {
 
 Vue.component(Header.name, Header);
 Vue.prototype.axios = axios;
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 Vue.prototype.setToken = function (tokenName, tokenValue) {
   if (window.localStorage) {
     localStorage.setItem(tokenName, tokenValue);

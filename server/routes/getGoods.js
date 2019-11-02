@@ -7,10 +7,19 @@ var {find} = require('../libs/db');
   let goods =  await find('goods');
   res.json({goods});
 }); */
-router.get('/', async function(req, res, next) {
+
+router.post('/', async function(req, res, next) {
   // res.send('respond with a resource');
+  let page = req.body.page;
+  let start = req.body.start;
+  let limitNum = 10;
+  let end = page * limitNum;
+  console.log(page,start,end);
   let goods =  await find('goodlist');
-  res.json({goods});
+  // console.log(goods);
+  console.log(goods.slice(start,end));
+  let goods = goods.slice(start,end);
+  res.json({goodlist});
 });
 
 module.exports = router;

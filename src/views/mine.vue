@@ -2,7 +2,7 @@
   <div>
     <mt-header title="个人中心">
       <router-link to="/" slot="left">
-        <mt-button icon="back"></mt-button>
+        <mt-button icon="back" @click="$router.back(-1)"></mt-button>
       </router-link>
       <mt-button icon="more" slot="right"></mt-button>
     </mt-header>
@@ -22,7 +22,7 @@
                   <div _ngcontent-c17 class="avatar">
                     <img
                       _ngcontent-c17
-                      src="//static.smartisanos.cn/account/asset/img/default-user-avatar.png"
+                      src="../assets/images/avatar.png"
                     />
                   </div>{{msg}}
                 </div>
