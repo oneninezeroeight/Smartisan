@@ -17,9 +17,10 @@ router.post('/', async function(req, res, next) {
   console.log(page,start,end);
   let goods =  await find('goodlist');
   // console.log(goods);
-  console.log(goods.slice(start,end));
-  let goods = goods.slice(start,end);
-  res.json({goodlist});
+  // console.log(goods.slice(start,end));
+  let arr =  goods.slice(start,end);     //返回指定数量的数据，一次十条(1-10.11-20)
+  console.log(arr);
+  res.json({arr});
 });
 
 module.exports = router;
