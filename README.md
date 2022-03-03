@@ -42,7 +42,7 @@
 
 支付页：![alt text](https://gitee.com/dearhuan/images/raw/master/image/screen-pay.png)搜索页：![alt text](https://gitee.com/dearhuan/images/raw/master/image/screen-search.png)
 
-我的页：![alt text](https://gitee.com/dearhuan/images/raw/master/image/screen-mine.png)登录页：![alt text](https://gitee.com/dearhuan/images/raw/master/image/screen-login.png)
+登录页：![alt text](https://gitee.com/dearhuan/images/raw/master/image/screen-login.png)
 
 注册页：![alt text](https://gitee.com/dearhuan/images/raw/master/image/screen-regist.png)
 
