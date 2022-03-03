@@ -1,7 +1,5 @@
 # Smartisan
 
-> ##### This is a "锤子" App written by Vue. The author is [Hehuan(何欢)](https://github.com/dearhuan).
->
 > ##### 该项目主要是使用Vue对锤子App进行了一个简单的仿写
 >
 > ##### 该项目暂时部署在腾讯云服务器上， 进入[Smartisan](http://193.112.112.233)通过移动端手机模拟器观看本项目页面具体信息
